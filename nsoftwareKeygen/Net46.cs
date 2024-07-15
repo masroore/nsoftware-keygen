@@ -1259,7 +1259,7 @@ public sealed class M : h
             ref licenseFromFile);
         if (error_code != 0)
         {
-            var code = (char)(65 + error_code);
+            var err_code_str = (char)(65 + error_code);
             var node_id = L__get_machine_name();
             switch (error_code)
             {
@@ -1288,7 +1288,7 @@ public sealed class M : h
                     break;
             }
 
-            throw new Exception(string.Format(text, code, node_id));
+            throw new Exception(string.Format(text, err_code_str, node_id));
         }
 
         W(serialCode,
