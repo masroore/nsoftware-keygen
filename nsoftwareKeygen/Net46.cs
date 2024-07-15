@@ -35,21 +35,21 @@ public class h
     {
         return (char)lic_typ switch
         {
-            'A'                              => true,
-            'B'                              => true,
-            'C'                              => true,
-            'D'                              => true,
-            'E'                              => true,
-            'F'                              => true,
-            'G'                              => true,
-            'M'                              => true,
-            'P'                              => true,
-            'S'                              => true,
-            'T'                              => true,
+            'A' => true,
+            'B' => true,
+            'C' => true,
+            'D' => true,
+            'E' => true,
+            'F' => true,
+            'G' => true,
+            'M' => true,
+            'P' => true,
+            'S' => true,
+            'T' => true,
             ROYALTY_FREE_VERSION_INDEPENDENT => true,
-            'X'                              => true,
-            'Z'                              => true,
-            _                                => false,
+            'X' => true,
+            'Z' => true,
+            _ => false,
         };
     }
 
@@ -62,21 +62,21 @@ public class h
     {
         return (char)lic_typ switch
         {
-            'A'                              => "Royalty-Free",
-            'B'                              => "Royalty-Free",
-            'C'                              => "Royalty-Free, Single Control",
-            'D'                              => "Royalty-Free",
-            'E'                              => "Single-Server, All Controls",
-            'F'                              => "Royalty-Free, Single Control",
-            'G'                              => "Single-Server, Single Control",
+            'A' => "Royalty-Free",
+            'B' => "Royalty-Free",
+            'C' => "Royalty-Free, Single Control",
+            'D' => "Royalty-Free",
+            'E' => "Single-Server, All Controls",
+            'F' => "Royalty-Free, Single Control",
+            'G' => "Single-Server, Single Control",
             ROYALTY_FREE_VERSION_INDEPENDENT => "Royalty-Free, Version Independent",
-            'X'                              => "Trial",
-            'Z'                              => "Trial",
-            'S'                              => "Single-Server, All Controls",
-            'T'                              => "Single-Server, Single Control",
-            'P'                              => "Single-Server, Processor Bound, All Controls",
-            'M'                              => "Metered",
-            _                                => string.Concat((char)lic_typ),
+            'X' => "Trial",
+            'Z' => "Trial",
+            'S' => "Single-Server, All Controls",
+            'T' => "Single-Server, Single Control",
+            'P' => "Single-Server, Processor Bound, All Controls",
+            'M' => "Metered",
+            _ => string.Concat((char)lic_typ),
         };
     }
 
@@ -107,7 +107,7 @@ public class h
             'F' => true,
             'V' => true,
             'Z' => true,
-            _   => false,
+            _ => false,
         };
     }
 
@@ -128,7 +128,8 @@ public class h
         uint num3 = 0u;
         uint num4 = 2654435769u;
         uint num5 = 32u;
-        while (num5-- != 0) {
+        while (num5-- != 0)
+        {
             num3 += num4;
             num += ((num2 << 4) + P_1[0]) ^ (num2 + num3) ^ ((num2 >> 5) + P_1[1]);
             num2 += ((num << 4) + P_1[2]) ^ (num + num3) ^ ((num >> 5) + P_1[3]);
@@ -158,31 +159,38 @@ public class h
     {
         uint[] array = new uint[2];
         uint[] array2 = new uint[4];
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++)
+        {
             array[i] = b(buf, offset + i * 4);
         }
 
-        for (int j = 0; j < 4; j++) {
+        for (int j = 0; j < 4; j++)
+        {
             array2[j] = b(buf2, offset + j * 4);
         }
 
         l(array, array2);
-        for (var k = 0; k < 2; k++) {
+        for (var k = 0; k < 2; k++)
+        {
             a(array[k], buf, k * 4);
         }
     }
 
     internal static void P(byte[] buf, int endOffset)
     {
-        for (var index = endOffset - 1; index >= 0; index--) {
-            if ((buf[index / 8] & (1 << index % 8)) != 0) {
+        for (var index = endOffset - 1; index >= 0; index--)
+        {
+            if ((buf[index / 8] & (1 << index % 8)) != 0)
+            {
                 buf[index / 5] |= (byte)(1 << index % 5);
             }
-            else {
+            else
+            {
                 buf[index / 5] &= (byte)(~(1 << index % 5));
             }
 
-            if (index % 5 == 0) {
+            if (index % 5 == 0)
+            {
                 buf[index / 5] &= 31;
             }
         }
@@ -248,7 +256,8 @@ public class h
 
     internal static byte B(byte leByte)
     {
-        if (leByte is >= 97 and <= 122) {
+        if (leByte is >= 97 and <= 122)
+        {
             leByte -= 32;
         }
 
@@ -258,8 +267,10 @@ public class h
     internal static void d(byte[] buffer, int offset, int length)
     {
         ulong num = (ulong)DateTime.Now.Ticks;
-        for (var i = 0; i < length; i++) {
-            if (i > 0 && i % 4 == 0) {
+        for (var i = 0; i < length; i++)
+        {
+            if (i > 0 && i % 4 == 0)
+            {
                 num = num * 25214903917L + 11;
             }
 
@@ -274,7 +285,8 @@ public class h
     {
         int i;
         int num;
-        for (i = num = offset; buffer[i] != 0; i++) {
+        for (i = num = offset; buffer[i] != 0; i++)
+        {
             var b = U(buffer[i]);
             if (-1 == b)
                 buffer[i] = 0;
@@ -289,19 +301,22 @@ public class h
 
     internal static byte[] u(byte[] buffer, int length)
     {
-        while (length % 5 != 0) {
+        while (length % 5 != 0)
+        {
             buffer[length++] = 0;
         }
 
         buffer[length] = 0;
         var div5_8bit = length / 5 * 8;
         var array = new byte[div5_8bit + 1];
-        for (var i = 0; i < length; i++) {
+        for (var i = 0; i < length; i++)
+        {
             array[i] = buffer[i];
         }
 
         P(array, length * 8);
-        for (int j = 0; j < div5_8bit; j++) {
+        for (int j = 0; j < div5_8bit; j++)
+        {
             array[j] = d(array[j]);
         }
 
@@ -316,7 +331,8 @@ public class h
     {
         var before = buf;
         var s_before = Encoding.ASCII.GetString(buf);
-        for (var i = 0; i < 16; i++) {
+        for (var i = 0; i < 16; i++)
+        {
             buf[i] = (byte)(buf[i] + (b78 - 48) + (b65 - 48));
         }
 
@@ -330,14 +346,19 @@ public class h
         // copy bufFirst40 to wokr buffer
         y(bufFirst40, 0, workBuffer, 0, bufFirst40.Length);
         var num = R(workBuffer, 0);
-        if (num == 0) {
+        if (num == 0)
+        {
             return resultBuffer;
         }
 
-        if (bufMiddle9 is { Length: > 0 }) {
+        if (bufMiddle9 is { Length: > 0 })
+        {
             workBuffer[num++] = 42;
             int num2;
-            for (num2 = num; num2 < workBuffer.Length - 1 && num2 - num < bufMiddle9.Length && bufMiddle9[num2 - num] != 0; num2++) {
+            for (num2 = num;
+                 num2 < workBuffer.Length - 1 && num2 - num < bufMiddle9.Length && bufMiddle9[num2 - num] != 0;
+                 num2++)
+            {
                 workBuffer[num2] = bufMiddle9[num2 - num];
             }
 
@@ -345,12 +366,15 @@ public class h
             num += R(workBuffer, num);
         }
 
-        while (num % 8 != 0) {
+        while (num % 8 != 0)
+        {
             workBuffer[num++] = 0;
         }
 
-        for (int num2 = 0; num2 < num / 8; num2++) {
-            for (int i = 0; i < 8; i++) {
+        for (int num2 = 0; num2 < num / 8; num2++)
+        {
+            for (int i = 0; i < 8; i++)
+            {
                 resultBuffer[i] ^= workBuffer[8 * num2 + i];
             }
 
@@ -379,11 +403,13 @@ public class h
     public const int KEY_INVALID_LENGTH = 3;
     public const int KEY_ERROR = 4;
 
-    public static int L(byte[] serial_from_license_file, byte[] node_id_buffer, byte[] key_from_license_file, byte[] signature_bytes)
+    public static int L(byte[] serial_from_license_file, byte[] node_id_buffer, byte[] key_from_license_file,
+        byte[] signature_bytes)
     {
         var key_bytes_cleaned = new byte[31];
         int i;
-        for (i = 0; i < key_bytes_cleaned.Length - 1 && key_from_license_file[i] != 0; i++) {
+        for (i = 0; i < key_bytes_cleaned.Length - 1 && key_from_license_file[i] != 0; i++)
+        {
             key_bytes_cleaned[i] = key_from_license_file[i];
         }
 
@@ -392,7 +418,8 @@ public class h
         var generated_key = w(serial_from_license_file, node_id_buffer, signature_bytes);
         var num = 1;
         var key_length = key_bytes_cleaned[6] == 0 ? 6 : 12; // 6 or 12 chars key
-        for (i = 0; i < key_length; i++) {
+        for (i = 0; i < key_length; i++)
+        {
             var src_byte = key_bytes_cleaned[i];
             var generated_byte = generated_key[i];
             var c = (char)src_byte;
@@ -416,57 +443,71 @@ public class h
     {
         var text =
             "         Product : [product]\r\n     Product Key : [productKey]\r\n  License Source : [licenseSource]\r\n    License Type : [licenseType]\r\nLast Valid Build : [lastValidBuild]\r\n";
-        if (P_1 is { Length: < 128 }) {
+        if (P_1 is { Length: < 128 })
+        {
             P_1 = null;
         }
 
         var buffer = ((P_1 != null) ? j(utf8StrToBytes(P_1 + "\0"), 128) : utf8StrToBytes(productKey + "\0"));
-        if (P_1 != null) {
+        if (P_1 != null)
+        {
             buffer[64] = 0;
         }
 
         string text2 = P_4;
-        if (P_0.Length > 0) {
+        if (P_0.Length > 0)
+        {
             text2 = text2 + " (" + P_0 + ")";
         }
 
         string product_key = "n/a";
-        if (P_1 is { Length: > 0 }) {
+        if (P_1 is { Length: > 0 })
+        {
             string @string = Encoding.ASCII.GetString(buffer, 0, buffer.Length);
             product_key = @string.Substring(0, @string.IndexOf("\0", StringComparison.Ordinal));
         }
-        else if (productKey is { Length: > 0 }) {
+        else if (productKey is { Length: > 0 })
+        {
             product_key = productKey;
         }
 
         string license_src = "n/a";
-        if (P_1 is { Length: > 0 }) {
+        if (P_1 is { Length: > 0 })
+        {
             license_src = "RuntimeLicense";
         }
-        else if (P_5) {
+        else if (P_5)
+        {
             license_src = "License File";
         }
-        else if (productKey is { Length: > 0 }) {
+        else if (productKey is { Length: > 0 })
+        {
             license_src = "Registry";
         }
 
         byte b = (byte)((buffer.Length > 5) ? buffer[5] : 0);
         string license_type;
-        if (!expiry_date.Equals("")) {
+        if (!expiry_date.Equals(""))
+        {
             license_type = "Beta (Expires on " + expiry_date + ")";
         }
-        else if (b != 0) {
+        else if (b != 0)
+        {
             license_type = v(b);
-            if (i(b)) {
-                license_type = license_type + " (Expires on " + DateTime.Now.AddDays(w(buffer)).ToString("MM/dd/yyyy") + ")";
+            if (i(b))
+            {
+                license_type = license_type + " (Expires on " + DateTime.Now.AddDays(w(buffer)).ToString("MM/dd/yyyy") +
+                               ")";
             }
         }
-        else {
+        else
+        {
             license_type = "None (No license could be found for using " + P_4 + " on this system.)";
         }
 
         var build_num = "n/a";
-        if (f(b)) {
+        if (f(b))
+        {
             R(buffer, 0);
             build_num = string.Concat(c(buffer));
         }
@@ -484,17 +525,24 @@ public class h
     public static string L()
     {
         var machine_name = "";
-        try {
+        try
+        {
             machine_name = Environment.MachineName;
             string environmentVariable = Environment.GetEnvironmentVariable("_CLUSTER_NETWORK_NAME_");
-            try {
-                if (environmentVariable is { Length: > 0 }) {
-                    machine_name = (string)Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters").GetValue("NV Hostname");
+            try
+            {
+                if (environmentVariable is { Length: > 0 })
+                {
+                    machine_name = (string)Registry.LocalMachine
+                        .OpenSubKey("SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters").GetValue("NV Hostname");
                 }
             }
-            catch { }
+            catch
+            {
+            }
         }
-        catch (Exception) {
+        catch (Exception)
+        {
             return "00000000";
         }
 
@@ -528,13 +576,14 @@ public class h
             48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
             65, 66, 67, 68, 69, 70
         ];
-        for (var index = last_offset - 1; index >= 0; index--) {
+        for (var index = last_offset - 1; index >= 0; index--)
+        {
             var b = buf[index];
             buf[2 * index + 1] = array[b & 15];
             b >>= 4;
             buf[2 * index] = array[b];
         }
-        
+
         var s_after = Encoding.Default.GetString(buf);
         return buf;
     }
@@ -542,14 +591,19 @@ public class h
     public static byte[] j(byte[] rtkBuf, int length)
     {
         //var array = Encoding.ASCII.GetBytes("0123456789ABCDEF");
-        for (var i = 0; i < length / 2; i++) {
+        for (var i = 0; i < length / 2; i++)
+        {
             var b = rtkBuf[2 * i];
-            if (b is >= 48 and <= 57) {
+            if (b is >= 48 and <= 57)
+            {
                 rtkBuf[i] = (byte)(b - 48 << 4);
             }
-            else {
-                if (b is < 65 or > 70) {
-                    for (i = 0; i < length; i++) {
+            else
+            {
+                if (b is < 65 or > 70)
+                {
+                    for (i = 0; i < length; i++)
+                    {
                         rtkBuf[i] = 0;
                     }
 
@@ -560,17 +614,20 @@ public class h
             }
 
             b = rtkBuf[2 * i + 1];
-            if (b is >= 48 and <= 57) {
+            if (b is >= 48 and <= 57)
+            {
                 rtkBuf[i] += (byte)(b - 48);
                 continue;
             }
 
-            if (b is >= 65 and <= 70) {
+            if (b is >= 65 and <= 70)
+            {
                 rtkBuf[i] += (byte)(b - 65 + 10);
                 continue;
             }
 
-            for (i = 0; i < length; i++) {
+            for (i = 0; i < length; i++)
+            {
                 rtkBuf[i] = 0;
             }
 
@@ -580,14 +637,17 @@ public class h
         return rtkBuf;
     }
 
-    public static byte[] x(byte[] dest_buffer, byte[] serial_code_format, byte[] node_id_bytes, byte[] encoded_seed_buffer)
+    public static byte[] x(byte[] dest_buffer, byte[] serial_code_format, byte[] node_id_bytes,
+        byte[] encoded_seed_buffer)
     {
-        if (dest_buffer != null) {
+        if (dest_buffer != null)
+        {
             dest_buffer[0] = 0;
         }
 
         var num = R(serial_code_format, 0);
-        if (serial_code_format[0] == 0) {
+        if (serial_code_format[0] == 0)
+        {
             return dest_buffer;
         }
 
@@ -595,15 +655,18 @@ public class h
         serial_code_format[39] = 0;
         byte[] array = w(serial_code_format, node_id_bytes, encoded_seed_buffer);
         int num2 = 0;
-        for (num2 = 0; num2 < 40; num2++) {
+        for (num2 = 0; num2 < 40; num2++)
+        {
             dest_buffer[num2] = serial_code_format[num2];
         }
 
-        for (num2 = 40; num2 < 48; num2++) {
+        for (num2 = 40; num2 < 48; num2++)
+        {
             dest_buffer[num2] = node_id_bytes[num2 - 40];
         }
 
-        for (num2 = 50; num2 < 62; num2++) {
+        for (num2 = 50; num2 < 62; num2++)
+        {
             dest_buffer[num2] = array[num2 - 50];
         }
 
@@ -623,19 +686,22 @@ public class h
 
     public static int T(byte[] rtkBuf, byte[] sigBuf, int prodCode)
     {
-        if (rtkBuf == null) {
+        if (rtkBuf == null)
+        {
             return INVALID_RTK;
         }
 
         int num = rtkBuf.Length - 1;
-        if (num < 128) {
+        if (num < 128)
+        {
             return INVALID_RTK;
         }
 
         // ?? decode buffer
         rtkBuf = j(rtkBuf, 128);
         rtkBuf[64] = 0;
-        if (rtkBuf[0] == 0) {
+        if (rtkBuf[0] == 0)
+        {
             return EMPTY_RTK;
         }
 
@@ -644,24 +710,29 @@ public class h
         byte[] buf9 = new byte[9];
         byte[] buf16 = new byte[16];
         int index;
-        for (index = 0; index < 40; index++) {
+        for (index = 0; index < 40; index++)
+        {
             buf40[index] = rtkBuf[index];
         }
 
-        for (index = 40; index < 49; index++) {
+        for (index = 40; index < 49; index++)
+        {
             buf9[index - 40] = rtkBuf[index];
         }
 
-        for (index = 50; index < 62; index++) {
+        for (index = 50; index < 62; index++)
+        {
             buf16[index - 50] = rtkBuf[index];
         }
 
         int num3 = L(buf40, buf9, buf16, sigBuf);
-        if (num3 != 0) {
+        if (num3 != 0)
+        {
             return num3;
         }
 
-        switch ((char)B(rtkBuf[5])) {
+        switch ((char)B(rtkBuf[5]))
+        {
             case 'A':
             case 'B':
             case 'D':
@@ -670,8 +741,10 @@ public class h
             case 'X':
             {
                 byte[] array4 = utf8StrToBytes(L());
-                for (index = 0; index < 8; index++) {
-                    if (array4[index] != rtkBuf[40 + index]) {
+                for (index = 0; index < 8; index++)
+                {
+                    if (array4[index] != rtkBuf[40 + index])
+                    {
                         return 20;
                     }
                 }
@@ -682,11 +755,13 @@ public class h
                 return _xh(rtkBuf);
             case 'C':
             case 'F':
-                if (prodCode == 0) {
+                if (prodCode == 0)
+                {
                     return num3;
                 }
 
-                if (prodCode != 10 * (rtkBuf[6] - 48) + rtkBuf[7] - 48) {
+                if (prodCode != 10 * (rtkBuf[6] - 48) + rtkBuf[7] - 48)
+                {
                     return 11;
                 }
 
@@ -699,11 +774,13 @@ public class h
     public static int k(byte[] P_0, char P_1)
     {
         byte b = B(P_0[5]);
-        if (b == 86) {
+        if (b == 86)
+        {
             return 0;
         }
 
-        if (B(P_0[3]) != P_1) {
+        if (B(P_0[3]) != P_1)
+        {
             return 21;
         }
 
@@ -713,11 +790,13 @@ public class h
     public static int M(byte[] P_0, char P_1)
     {
         byte b = B(P_0[5]);
-        if (b == 86) {
+        if (b == 86)
+        {
             return 0;
         }
 
-        if (B(P_0[3]) != P_1) {
+        if (B(P_0[3]) != P_1)
+        {
             return 21;
         }
 
@@ -727,12 +806,14 @@ public class h
     public static int i(byte[] rtkBytes, int buildNum)
     {
         var the5thByte = B(rtkBytes[5]);
-        if (!f(the5thByte)) {
+        if (!f(the5thByte))
+        {
             return 0;
         }
 
         var num = c(rtkBytes);
-        if (buildNum > num) {
+        if (buildNum > num)
+        {
             return 13;
         }
 
@@ -742,12 +823,14 @@ public class h
     public static int a(byte[] P_0, int P_1)
     {
         byte b = B(P_0[5]);
-        if (!f(b)) {
+        if (!f(b))
+        {
             return 0;
         }
 
         int num = c(P_0);
-        if (P_1 > num) {
+        if (P_1 > num)
+        {
             return 14;
         }
 
@@ -758,21 +841,26 @@ public class h
     {
         P_0[P_0.Length - 1] = 0;
         R(P_0, 0);
-        if (i(P_0[5])) {
+        if (i(P_0[5]))
+        {
             int num = 10 * (P_0[12] - 48) + (P_0[13] - 48);
             DateTime now = DateTime.Now;
             int num2 = 365 * (now.Year - 2000) + 30 * now.Month + now.Day;
-            int num3 = 365 * (10 * (P_0[10] - 48) + (P_0[11] - 48)) + 30 * (10 * (P_0[6] - 48) + (P_0[7] - 48)) + (10 * (P_0[8] - 48) + (P_0[9] - 48));
-            if (num2 > num3 + num) {
+            int num3 = 365 * (10 * (P_0[10] - 48) + (P_0[11] - 48)) + 30 * (10 * (P_0[6] - 48) + (P_0[7] - 48)) +
+                       (10 * (P_0[8] - 48) + (P_0[9] - 48));
+            if (num2 > num3 + num)
+            {
                 return 9;
             }
 
-            if (num2 < num3 - num) {
+            if (num2 < num3 - num)
+            {
                 return 12;
             }
         }
 
-        if (p(P_0[5])) {
+        if (p(P_0[5]))
+        {
             int num4 = ((P_0[6] <= 56) ? (P_0[6] - 48) : 0);
         }
 
@@ -783,16 +871,20 @@ public class h
     {
         P_0[P_0.Length - 1] = 0;
         R(P_0, 0);
-        if (i(P_0[5])) {
+        if (i(P_0[5]))
+        {
             int num = 10 * (P_0[12] - 48) + (P_0[13] - 48);
             DateTime now = DateTime.Now;
             int num2 = 365 * (now.Year - 2000) + 30 * now.Month + now.Day;
-            int num3 = 365 * (10 * (P_0[10] - 48) + (P_0[11] - 48)) + 30 * (10 * (P_0[6] - 48) + (P_0[7] - 48)) + (10 * (P_0[8] - 48) + (P_0[9] - 48));
-            if (num2 > num3 + num) {
+            int num3 = 365 * (10 * (P_0[10] - 48) + (P_0[11] - 48)) + 30 * (10 * (P_0[6] - 48) + (P_0[7] - 48)) +
+                       (10 * (P_0[8] - 48) + (P_0[9] - 48));
+            if (num2 > num3 + num)
+            {
                 return 0;
             }
 
-            if (num2 < num3) {
+            if (num2 < num3)
+            {
                 return 0;
             }
 
@@ -808,45 +900,51 @@ public class h
      */
     public static int c(byte[] decodedFromLicenseFile)
     {
-        if (decodedFromLicenseFile[0] == 0 || !f(B(decodedFromLicenseFile[5]))) {
+        if (decodedFromLicenseFile[0] == 0 || !f(B(decodedFromLicenseFile[5])))
+        {
             return -1;
         }
 
         int num = 10;
-        int year = 1000 * (decodedFromLicenseFile[num] - 48) + 100 * (decodedFromLicenseFile[num + 1] - 48) + 10 * (decodedFromLicenseFile[num + 2] - 48) +
+        int year = 1000 * (decodedFromLicenseFile[num] - 48) + 100 * (decodedFromLicenseFile[num + 1] - 48) +
+                   10 * (decodedFromLicenseFile[num + 2] - 48) +
                    (decodedFromLicenseFile[num + 3] - 48);
         int month = 10 * (decodedFromLicenseFile[num + 4] - 48) + (decodedFromLicenseFile[num + 5] - 48);
         int day = 10 * (decodedFromLicenseFile[num + 6] - 48) + (decodedFromLicenseFile[num + 7] - 48);
-        return (new DateTime(year, month, day, 0, 0, 0, DateTimeKind.Utc) - new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc)).Days;
+        return (new DateTime(year, month, day, 0, 0, 0, DateTimeKind.Utc) -
+                new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc)).Days;
     }
 }
 
 public sealed class M : h
 {
-    public static void n(int code, Type asmType, string runTimeKey)
-    {
-        l(code, asmType, (runTimeKey != null) ? utf8StrToBytes(runTimeKey + "\0") : null);
-    }
+    public static void n(int code, Type asmType, string runTimeKey) => l(code, asmType,
+        (runTimeKey != null) ? utf8StrToBytes(runTimeKey + "\0") : null);
 
     internal static void l(int code, Type asmType, byte[]? rtkBytes)
     {
         int num = 18;
-        if (rtkBytes != null) {
+        if (rtkBytes != null)
+        {
             byte[] array = new byte[17];
             d(array);
             num = T(rtkBytes, array, code);
-            if (num == 0) {
+            if (num == 0)
+            {
                 num = k(rtkBytes, 'J');
             }
 
-            if (num == 0) {
+            if (num == 0)
+            {
                 num = i(rtkBytes, 8949);
-                if (num != 0) {
+                if (num != 0)
+                {
                     int num2 = ipw240x.h.c(rtkBytes);
                     char c = (char)(65 + num);
                     string text = L();
                     string text2 = "IPWorks 2024";
-                    if (asmType != null) {
+                    if (asmType != null)
+                    {
                         object obj = text2;
                         text2 = string.Concat(obj, " (", asmType, " component)");
                     }
@@ -858,7 +956,8 @@ public sealed class M : h
             }
         }
 
-        if (num != 0) {
+        if (num != 0)
+        {
             Q(code, asmType, ref num);
         }
     }
@@ -872,9 +971,11 @@ public sealed class M : h
     internal static void W(string some_kind_of_product_type, string exception_tpl)
     {
         var flag = false;
-        if (some_kind_of_product_type.Length >= 10 && ((flag && some_kind_of_product_type.IndexOf("1DEV", StringComparison.Ordinal) == 6) ||
-                                                       some_kind_of_product_type.IndexOf("1DSK", StringComparison.Ordinal) == 6 ||
-                                                       (flag && some_kind_of_product_type.IndexOf("1SUB", StringComparison.Ordinal) == 6)) && D()) {
+        if (some_kind_of_product_type.Length >= 10 &&
+            ((flag && some_kind_of_product_type.IndexOf("1DEV", StringComparison.Ordinal) == 6) ||
+             some_kind_of_product_type.IndexOf("1DSK", StringComparison.Ordinal) == 6 ||
+             (flag && some_kind_of_product_type.IndexOf("1SUB", StringComparison.Ordinal) == 6)) && D())
+        {
             throw new Exception(string.Format(exception_tpl, 'Z', L()));
         }
     }
@@ -920,38 +1021,46 @@ public sealed class M : h
     }
 
     //t("SOFTWARE\\nsoftware\\RT\\IPNJA", signature_internal, prodCode, ref outMessage, ref array2, ref text2);
-    private static int t(string regKey, byte[] sigBytes, int prodCode, ref string serial, ref byte[] outBuffer, ref string serialFromLicenseFile)
+    private static int t(string regKey, byte[] sigBytes, int prodCode, ref string serial, ref byte[] outBuffer,
+        ref string serialFromLicenseFile)
     {
         var num = c(regKey, sigBytes, ref serial, ref outBuffer, ref serialFromLicenseFile);
-        if (num != 0) {
+        if (num != 0)
+        {
             return num;
         }
 
-        if (outBuffer == null) {
+        if (outBuffer == null)
+        {
             return num;
         }
 
-        if (!y(outBuffer[5])) {
+        if (!y(outBuffer[5]))
+        {
             return num;
         }
 
-        if (prodCode == 10 * (outBuffer[6] - 48) + outBuffer[7] - 48) {
+        if (prodCode == 10 * (outBuffer[6] - 48) + outBuffer[7] - 48)
+        {
             return 0;
         }
 
         regKey = regKey + "\\" + prodCode;
         num = c(regKey, sigBytes, ref serial, ref outBuffer, ref serialFromLicenseFile);
-        switch (num) {
+        switch (num)
+        {
             case 6:
                 return 11;
             default:
                 return num;
             case 0:
-                if (!y(outBuffer[5])) {
+                if (!y(outBuffer[5]))
+                {
                     return 10;
                 }
 
-                if (prodCode != 10 * (outBuffer[6] - 48) + outBuffer[7] - 48) {
+                if (prodCode != 10 * (outBuffer[6] - 48) + outBuffer[7] - 48)
+                {
                     return 11;
                 }
 
@@ -967,11 +1076,13 @@ public sealed class M : h
         var length = codeBase.LastIndexOf("/", StringComparison.Ordinal);
         codeBase = codeBase.Substring(0, length);
         codeBase = codeBase.Substring(8);
-        if (File.Exists(codeBase + "/nsoftware.IPWorks.lic")) {
+        if (File.Exists(codeBase + "/nsoftware.IPWorks.lic"))
+        {
             return codeBase + "/nsoftware.IPWorks.lic";
         }
 
-        if (File.Exists(codeBase + "/IPNJA.lic")) {
+        if (File.Exists(codeBase + "/IPNJA.lic"))
+        {
             return codeBase + "/IPNJA.lic";
         }
 
@@ -980,11 +1091,13 @@ public sealed class M : h
             ? Environment.GetEnvironmentVariable("HOME")
             : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%"))!;
         codeBase += "/.nsoftware";
-        if (File.Exists(codeBase + "/nsoftware.IPWorks.lic")) {
+        if (File.Exists(codeBase + "/nsoftware.IPWorks.lic"))
+        {
             return codeBase + "/nsoftware.IPWorks.lic";
         }
 
-        if (File.Exists(codeBase + "/IPNJA.lic")) {
+        if (File.Exists(codeBase + "/IPNJA.lic"))
+        {
             return codeBase + "/IPNJA.lic";
         }
 
@@ -996,7 +1109,8 @@ public sealed class M : h
     public const int ERROR_LICENSE_PROCESSING = 8;
     public const int INVALIDE_LICENSE_TYPE = 10;
 
-    private static int c(string RunTimeLicenseCode, byte[] signatureBytes, ref string serial, ref byte[] serialDecodedBytes, ref string valIPNJA)
+    private static int c(string RunTimeLicenseCode, byte[] signatureBytes, ref string serial,
+        ref byte[] serialDecodedBytes, ref string valIPNJA)
     {
         byte[] key_bytes;
         Hashtable? hashtable = null;
@@ -1008,146 +1122,182 @@ public sealed class M : h
         int return_code;
         var licenseFilename = k();
         string? text2 = null;
-        if (licenseFilename != null || text2 != null) {
+        if (licenseFilename != null || text2 != null)
+        {
             hashtable = new Hashtable();
             string? licenseFileContent = null;
-            if (licenseFileContent == null && text2 != null) {
+            if (licenseFileContent == null && text2 != null)
+            {
                 licenseFileContent = text2;
             }
 
             licenseFileContent ??= File.ReadAllText(licenseFilename);
 
             var reader = new StringReader(licenseFileContent);
-            try {
+            try
+            {
                 var trimChars = new[] { '"' };
-                while (reader.ReadLine() is { } line) {
-                    if (!line.StartsWith("[HKEY_LOCAL_MACHINE\\", StringComparison.Ordinal)) {
+                while (reader.ReadLine() is { } line)
+                {
+                    if (!line.StartsWith("[HKEY_LOCAL_MACHINE\\", StringComparison.Ordinal))
+                    {
                         continue;
                     }
 
                     var foundRuntimeContext = line.Equals("[HKEY_LOCAL_MACHINE\\" + RunTimeLicenseCode + "]");
-                    while ((line = reader.ReadLine()) != null && line.Length != 0) {
+                    while ((line = reader.ReadLine()) != null && line.Length != 0)
+                    {
                         var pos = line.IndexOf("=", StringComparison.Ordinal);
-                        if (pos >= 0) {
+                        if (pos >= 0)
+                        {
                             var lbl = line.Substring(0, pos).Trim(trimChars);
                             var val = line.Substring(pos + 1).Trim(trimChars);
-                            if (foundRuntimeContext) {
+                            if (foundRuntimeContext)
+                            {
                                 hashtable.Add(lbl, val);
                             }
 
-                            if (lbl.Equals("IPNJA")) {
+                            if (lbl.Equals("IPNJA"))
+                            {
                                 valIPNJA = val;
                             }
                         }
                     }
                 }
             }
-            finally {
+            finally
+            {
                 reader.Close();
             }
 
-            if (!hashtable.ContainsKey("@")) {
+            if (!hashtable.ContainsKey("@"))
+            {
                 return NO_SERIAL_FOUND;
             }
 
             serial = (string)hashtable["@"];
             serialDecodedBytes = sM.f(serial + "\0", null);
         }
-        else {
-            if (J || NN.H()) {
+        else
+        {
+            if (J || NN.H())
+            {
                 return NO_SERIAL_FOUND;
             }
 
             RegistryKey registryKey = null;
-            try {
+            try
+            {
                 registryKey = Registry.LocalMachine.OpenSubKey(RunTimeLicenseCode.Replace("IPNJA", ""));
-                if (registryKey != null) {
+                if (registryKey != null)
+                {
                     object value = registryKey.GetValue("IPNJA");
-                    if (value != null) {
+                    if (value != null)
+                    {
                         valIPNJA = (string)value;
                     }
                 }
             }
-            catch { }
+            catch
+            {
+            }
 
-            try {
+            try
+            {
                 registryKey = Registry.LocalMachine.OpenSubKey(RunTimeLicenseCode);
-                if (registryKey == null) {
+                if (registryKey == null)
+                {
                     return NO_SERIAL_FOUND;
                 }
 
                 object value = registryKey.GetValue("");
-                if (value == null) {
+                if (value == null)
+                {
                     return NO_SERIAL_FOUND;
                 }
 
                 serial = (string)value;
                 serialDecodedBytes = sM.f((string)value + "\0", null);
             }
-            catch (SecurityException ex) {
+            catch (SecurityException ex)
+            {
                 throw new Exception("Error reading registry: " + ex.Message);
             }
-            catch (Exception) {
+            catch (Exception)
+            {
                 return ERROR_READING_REGISTRY;
             }
         }
 
         R(serialDecodedBytes, 0);
-        if (serialDecodedBytes[0] == 0) {
+        if (serialDecodedBytes[0] == 0)
+        {
             return NULL_LICENSE_KEY;
         }
 
         var license_type_byte = serialDecodedBytes[5];
 
-        if (!A(license_type_byte)) {
+        if (!A(license_type_byte))
+        {
             return INVALIDE_LICENSE_TYPE;
         }
 
-        if (K(license_type_byte)) {
+        if (K(license_type_byte))
+        {
             node_id_buffer[0] = 42; // "*"
             node_id_buffer[1] = 0;
         }
-        else {
+        else
+        {
             node_id_buffer = sM.f(L(), null);
         }
 
-        try {
+        try
+        {
             var label = y(node_id_buffer, 0, 8);
-            if (label[0] == '*') {
+            if (label[0] == '*')
+            {
                 label = "*";
             }
 
             object the_key = null;
-            if (hashtable != null) {
+            if (hashtable != null)
+            {
                 the_key = hashtable[label];
             }
-            else {
+            else
+            {
                 RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(RunTimeLicenseCode);
-                if (registryKey != null) {
+                if (registryKey != null)
+                {
                     the_key = registryKey.GetValue(label);
                 }
             }
 
-            if (the_key == null) {
+            if (the_key == null)
+            {
                 return KEY_NOT_FOUND;
             }
 
             key_bytes = sM.f((string)the_key + "\0", null);
         }
-        catch (Exception) {
+        catch (Exception)
+        {
             return ERROR_LICENSE_PROCESSING;
         }
 
         return_code = node_id_buffer[0] != 42
             ? L(serialDecodedBytes, node_id_buffer, key_bytes, signatureBytes)
             : L(serialDecodedBytes, null, key_bytes, signatureBytes);
-        if (return_code == 0) {
+        if (return_code == 0)
+        {
             return_code = M(serialDecodedBytes, 'J');
             if (return_code != 0)
                 return return_code;
         }
 
-        if (return_code == 0) {
+        if (return_code == 0)
+        {
             return_code = a(serialDecodedBytes, 8949);
             if (return_code != 0)
                 return return_code;
@@ -1170,7 +1320,8 @@ public sealed class M : h
     internal static string h(int prodCode, Type? asmType, ref int error_code, ref string serialCode, bool trialNag)
     {
         var text = "IPWorks 2024";
-        if (asmType != null) {
+        if (asmType != null)
+        {
             object obj = text;
             text = string.Concat(obj, " (", asmType, " component)");
         }
@@ -1180,11 +1331,14 @@ public sealed class M : h
         x(signature_internal);
         byte[]? outBuffer = null;
         var licenseFromFile = "";
-        error_code = t("SOFTWARE\\nsoftware\\RT\\IPNJA", signature_internal, prodCode, ref serialCode, ref outBuffer, ref licenseFromFile);
-        if (error_code != 0) {
+        error_code = t("SOFTWARE\\nsoftware\\RT\\IPNJA", signature_internal, prodCode, ref serialCode, ref outBuffer,
+            ref licenseFromFile);
+        if (error_code != 0)
+        {
             var code = (char)(65 + error_code);
             var node_id = L();
-            switch (error_code) {
+            switch (error_code)
+            {
                 case LICENSE_NOT_ACTIVATED:
                     text +=
                         "This system contains a license for IPWorks 2024 that has been installed but not activated.  You must run setup in order to activate the license on this system [code: {0} nodeid: {1}].";
@@ -1197,9 +1351,11 @@ public sealed class M : h
                 {
                     var build_number = ipw240x.h.c(outBuffer);
                     object obj = text;
-                    text = string.Concat(obj, "This system contains a license for IPWorks 2024 that is only valid for use with builds ", build_number,
-                                         " and earlier, but the current build is ", 8949,
-                                         ". Please visit www.nsoftware.com or email support@nsoftware.com for more information [code: {0} nodeid: {1}].");
+                    text = string.Concat(obj,
+                        "This system contains a license for IPWorks 2024 that is only valid for use with builds ",
+                        build_number,
+                        " and earlier, but the current build is ", 8949,
+                        ". Please visit www.nsoftware.com or email support@nsoftware.com for more information [code: {0} nodeid: {1}].");
                     break;
                 }
                 default:
@@ -1212,24 +1368,29 @@ public sealed class M : h
         }
 
         W(serialCode,
-          "This system contains a developer license for IPWorks 2024 which cannot be used on this operating system. See www.nsoftware.com for licensing options. [code: {0} nodeid: {1}]");
-        if (!trialNag) {
-            if (i(outBuffer[5])) {
+            "This system contains a developer license for IPWorks 2024 which cannot be used on this operating system. See www.nsoftware.com for licensing options. [code: {0} nodeid: {1}]");
+        if (!trialNag)
+        {
+            if (i(outBuffer[5]))
+            {
                 return "EXPIRING TRIAL [" + w(outBuffer) + " DAYS LEFT]";
             }
 
             return serialCode;
         }
 
-        if (Environment.OSVersion.Platform == PlatformID.WinCE) {
+        if (Environment.OSVersion.Platform == PlatformID.WinCE)
+        {
             return string.Empty;
         }
 
-        if (i(outBuffer[5])) {
+        if (i(outBuffer[5]))
+        {
             return string.Empty;
         }
 
-        if (!o(outBuffer[5])) {
+        if (!o(outBuffer[5]))
+        {
             return string.Empty;
         }
 
@@ -1263,7 +1424,8 @@ public sealed class M : h
         buf[num++] = 100;
         buf[num++] = 74;
         buf[num++] = 70;
-        if (encode != 0) {
+        if (encode != 0)
+        {
             G(buf, 78, 65);
         }
     }
@@ -1291,10 +1453,12 @@ internal class saE
 {
     internal static string aM(byte[] serial, string? encoding)
     {
-        try {
+        try
+        {
             return w(serial, 0, serial.Length, encoding);
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             throw new Exception(ex.Message);
         }
     }
@@ -1337,7 +1501,8 @@ internal class saE
     internal static string ss(byte[] P_0, int P_1, int P_2)
     {
         var array = new char[P_2];
-        for (var i = 0; i < array.Length; i++) {
+        for (var i = 0; i < array.Length; i++)
+        {
             array[i] = n[P_0[i + P_1] & 0xFF];
         }
 
@@ -1348,16 +1513,20 @@ internal class saE
 
     internal static string w(byte[] serial, int offset, int length, string? encodingName)
     {
-        try {
-            if (string.IsNullOrEmpty(encodingName)) {
+        try
+        {
+            if (string.IsNullOrEmpty(encodingName))
+            {
                 return su(serial, offset, length);
             }
 
             Encoding encoding = Encoding.GetEncoding(sd(encodingName));
             return encoding.GetString(serial, offset, length);
         }
-        catch (Exception ex) {
-            if (encodingName.ToLowerInvariant().Equals("iso-8859-14")) {
+        catch (Exception ex)
+        {
+            if (encodingName.ToLowerInvariant().Equals("iso-8859-14"))
+            {
                 return ss(serial, offset, length);
             }
 
@@ -1367,11 +1536,14 @@ internal class saE
 
     internal static byte[] aI(string serial, string? encoding)
     {
-        try {
+        try
+        {
             return string.IsNullOrEmpty(encoding) ? sC(serial) : Encoding.GetEncoding(sd(encoding)).GetBytes(serial);
         }
-        catch (Exception ex) {
-            if (encoding.ToLowerInvariant().Equals("iso-8859-14")) {
+        catch (Exception ex)
+        {
+            if (encoding.ToLowerInvariant().Equals("iso-8859-14"))
+            {
                 return sN(serial);
             }
 
@@ -1391,48 +1563,63 @@ internal class saE
 
     protected static string sd(string P_0)
     {
-        if (bT(P_0)) {
+        if (bT(P_0))
+        {
             return P_0;
         }
 
         string text = P_0.ToLower();
-        if (text.Equals("utf8")) {
+        if (text.Equals("utf8"))
+        {
             return "UTF-8";
         }
 
-        if (text.Equals("euc") || text.Equals("eucjp") || text.Equals("eucjpms") || text.Equals("eucjp-win") || text.Equals("eucjis") ||
-            text.Equals("euc_jp") || text.Equals("eucjp-ms") || text.Equals("euc-jp-ms") || text.Equals("euc-jis-2004") || text.Equals("euc-jp-open") ||
-            text.Equals("ujis")) {
+        if (text.Equals("euc") || text.Equals("eucjp") || text.Equals("eucjpms") || text.Equals("eucjp-win") ||
+            text.Equals("eucjis") ||
+            text.Equals("euc_jp") || text.Equals("eucjp-ms") || text.Equals("euc-jp-ms") ||
+            text.Equals("euc-jis-2004") || text.Equals("euc-jp-open") ||
+            text.Equals("ujis"))
+        {
             return "euc-jp";
         }
 
-        if (text.Equals("cp932") || text.Equals("ms932") || text.Equals("windows-31j") || text.Equals("cswindows31j") || text.Equals("sjis-win") ||
-            text.Equals("shift_jis-2004") || text.Equals("jis_c6220-1969-jp")) {
+        if (text.Equals("cp932") || text.Equals("ms932") || text.Equals("windows-31j") || text.Equals("cswindows31j") ||
+            text.Equals("sjis-win") ||
+            text.Equals("shift_jis-2004") || text.Equals("jis_c6220-1969-jp"))
+        {
             return "shift_jis";
         }
 
-        if (text.Equals("iso-2022-jp-1") || text.Equals("iso-2022-jp-2") || text.Equals("iso-2022-jp-ms") || text.Equals("jis") || text.Equals("jis-ms")) {
+        if (text.Equals("iso-2022-jp-1") || text.Equals("iso-2022-jp-2") || text.Equals("iso-2022-jp-ms") ||
+            text.Equals("jis") || text.Equals("jis-ms"))
+        {
             return "iso-2022-jp";
         }
 
-        if (text.Equals("ansi_x3.110-1983") || text.Equals("iso-ir-99") || text.Equals("csa_t500-1983") || text.Equals("naplps") ||
-            text.Equals("csiso99naplps")) {
+        if (text.Equals("ansi_x3.110-1983") || text.Equals("iso-ir-99") || text.Equals("csa_t500-1983") ||
+            text.Equals("naplps") ||
+            text.Equals("csiso99naplps"))
+        {
             return "us-ascii";
         }
 
-        if (text.Equals("8bit")) {
+        if (text.Equals("8bit"))
+        {
             return "ISO-8859-1";
         }
 
-        if (text.Equals("cp-850") || text.Equals("cp850")) {
+        if (text.Equals("cp-850") || text.Equals("cp850"))
+        {
             return "cp850";
         }
 
-        if (text.Equals("cp1252") || text.Equals("cp-1252")) {
+        if (text.Equals("cp1252") || text.Equals("cp-1252"))
+        {
             return "windows-1252";
         }
 
-        if (text.Equals("t.101-g2") || text.Equals("iso-ir-128")) {
+        if (text.Equals("t.101-g2") || text.Equals("iso-ir-128"))
+        {
             return "UTF-8";
         }
 
@@ -1443,11 +1630,15 @@ internal class saE
 
     internal static byte[] sN(string P_0)
     {
-        if (C == null) {
-            lock (n) {
-                if (C == null) {
+        if (C == null)
+        {
+            lock (n)
+            {
+                if (C == null)
+                {
                     C = new byte[65535];
-                    for (int i = 0; i < n.Length; i++) {
+                    for (int i = 0; i < n.Length; i++)
+                    {
                         int num = n[i] & 0xFFFF;
                         C[num] = (byte)((uint)i & 0xFFu);
                     }
@@ -1457,7 +1648,8 @@ internal class saE
 
         char[] array = P_0.ToCharArray();
         byte[] array2 = new byte[array.Length];
-        for (int i = 0; i < array2.Length; i++) {
+        for (int i = 0; i < array2.Length; i++)
+        {
             array2[i] = C[array[i] & 0xFFFF];
         }
 
@@ -1469,8 +1661,5 @@ internal class NN // : IDisposable
 {
     protected static bool n = false;
 
-    public static bool H()
-    {
-        return n;
-    }
+    public static bool H() => n;
 }
