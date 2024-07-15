@@ -229,9 +229,13 @@ public class h
         var s = Encoding.ASCII.GetString(O__ALPHA_NUM_TBL);
     }
 
-    internal static byte d__translate_from_LUT(byte leByte) => O__ALPHA_NUM_TBL[leByte % 32];
+    internal static byte d__translate_from_LUT(byte leByte)
+    {
+        var b = leByte % 32;
+        return O__ALPHA_NUM_TBL[leByte % 32];
+    }
 
-    internal static sbyte U__translate_byte(byte theByte)
+    internal static sbyte U__get_index_of_char_in_LUT(byte theByte)
     {
         // lower to UPPERCASE
         if (theByte is >= 97 and <= 122) theByte -= 32;
@@ -281,42 +285,35 @@ public class h
      */
     protected internal static int R___decode_buffer(byte[] buffer, int offset)
     {
+        var orig = Encoding.Default.GetString(buffer);
         int i;
-        int num;
-        for (i = num = offset; buffer[i] != 0; i++)
+        int index;
+        for (i = index = offset; buffer[i] != 0; i++)
         {
-            var b = U__translate_byte(buffer[i]);
-            if (-1 == b)
+            var lut_index = U__get_index_of_char_in_LUT(buffer[i]);
+            if (lut_index == -1)
                 buffer[i] = 0;
             else
-                buffer[num++] = d__translate_from_LUT((byte)b);
+                buffer[index++] = d__translate_from_LUT((byte)lut_index);
         }
 
-        for (var j = num; j < i; j++) buffer[j] = 0;
+        for (var j = index; j < i; j++) buffer[j] = 0;
 
-        return num - offset;
+        var after = y__bytes_to_string(buffer, 0, index);
+        return index - offset;
     }
 
-    internal static byte[] u(byte[] buffer, int length)
+    internal static byte[] u__translate_bytes_to_alphanum(byte[] buffer, int length)
     {
-        while (length % 5 != 0)
-        {
-            buffer[length++] = 0;
-        }
+        while (length % 5 != 0) buffer[length++] = 0;
 
         buffer[length] = 0;
         var div5_8bit = length / 5 * 8;
         var array = new byte[div5_8bit + 1];
-        for (var i = 0; i < length; i++)
-        {
-            array[i] = buffer[i];
-        }
+        for (var i = 0; i < length; i++) array[i] = buffer[i];
 
         P(array, length * 8);
-        for (int j = 0; j < div5_8bit; j++)
-        {
-            array[j] = d__translate_from_LUT(array[j]);
-        }
+        for (var j = 0; j < div5_8bit; j++) array[j] = d__translate_from_LUT(array[j]);
 
         array[div5_8bit] = 0;
         return array;
@@ -337,38 +334,41 @@ public class h
         var s_after = Encoding.Default.GetString(buf);
     }
 
-    internal static byte[] P(byte[] bufFirst40, byte[] bufMiddle9, byte[] signatureBuf)
+    internal static byte[] P__generate_key_for_serial_node(byte[] serial_40, byte[] node_id8, byte[] signatureBuf)
     {
         var workBuffer = new byte[301];
         var resultBuffer = new byte[14];
-        // copy bufFirst40 to wokr buffer
-        y__array_copy(bufFirst40, 0, workBuffer, 0, bufFirst40.Length);
-        var num = R___decode_buffer(workBuffer, 0);
-        if (num == 0)
+        y__array_copy(serial_40, 0, workBuffer, 0, serial_40.Length);
+        var index = R___decode_buffer(workBuffer, 0);
+        if (index == 0)
             return resultBuffer;
 
-        if (bufMiddle9 is { Length: > 0 })
+        if (node_id8 is { Length: > 0 })
         {
-            workBuffer[num++] = 42;
-            int num2;
-            for (num2 = num;
-                 num2 < workBuffer.Length - 1 && num2 - num < bufMiddle9.Length && bufMiddle9[num2 - num] != 0;
-                 num2++)
-            {
-                workBuffer[num2] = bufMiddle9[num2 - num];
-            }
+            workBuffer[index++] = 42; // '*'
+            int index_node;
+            for (index_node = index;
+                 index_node < workBuffer.Length - 1 && index_node - index < node_id8.Length &&
+                 node_id8[index_node - index] != 0;
+                 index_node++) workBuffer[index_node] = node_id8[index_node - index];
 
-            workBuffer[num2] = 0;
-            num += R___decode_buffer(workBuffer, num);
+            workBuffer[index_node] = 0;
+            var wb_s = y__bytes_to_string(workBuffer, 0, index_node);
+            index += R___decode_buffer(workBuffer, index);
+            wb_s = y__bytes_to_string(workBuffer, 0, index);
         }
 
-        while (num % 8 != 0) workBuffer[num++] = 0;
+        while (index % 8 != 0) workBuffer[index++] = 0;
 
-        for (var num2 = 0; num2 < num / 8; num2++)
+        var rb_s = "";
+        for (var xor_offt = 0; xor_offt < index / 8; xor_offt++)
         {
-            for (int i = 0; i < 8; i++) resultBuffer[i] ^= workBuffer[8 * num2 + i];
+            for (var i = 0; i < 8; i++)
+                resultBuffer[i] ^= workBuffer[8 * xor_offt + i];
 
+            rb_s = y__bytes_to_string(resultBuffer, 0, 14);
             b(resultBuffer, 0, signatureBuf);
+            rb_s = y__bytes_to_string(resultBuffer, 0, 14);
         }
 
         return resultBuffer;
@@ -377,13 +377,12 @@ public class h
     /**
      * Get 12 byte array - <b>possibly the key XXXX-XXXX-XXXX</b>
      */
-    internal static byte[] w(byte[] serial_code_40, byte[] node_id_8_chars, byte[] signatureBuf)
+    internal static byte[] w__generate_key(byte[] serial_code_40, byte[] node_id_8_chars, byte[] signature_bytes)
     {
-        var key_buff = P(serial_code_40, node_id_8_chars, signatureBuf);
-        key_buff = u(key_buff, 8);
-        var s1 = Encoding.Default.GetString(key_buff);
+        var key_buff = P__generate_key_for_serial_node(serial_code_40, node_id_8_chars, signature_bytes);
+        key_buff = u__translate_bytes_to_alphanum(key_buff, 8);
         key_buff[12] = 0;
-        var s2 = Encoding.Default.GetString(key_buff);
+        var s2 = y__bytes_to_string(key_buff, 0, 12);
         return key_buff;
     }
 
@@ -403,7 +402,7 @@ public class h
 
         key_buffer[i] = 0;
         R___decode_buffer(key_buffer, 0);
-        var generated_key = w(serial_from_license_file, node_id_buffer, signature_bytes);
+        var generated_key = w__generate_key(serial_from_license_file, node_id_buffer, signature_bytes);
         var num = 1;
         var key_length = key_buffer[6] == 0 ? 6 : 12; // 6 or 12 chars key
         for (i = 0; i < key_length; i++)
@@ -553,7 +552,7 @@ public class h
             69, 110, 105, 107, 97, 109, 69, 114, 117, 104,
             100, 121, 114, 116, 104, 83
         ];
-        var key_buffer = w(serial_code_maybe, [], seed_bytes);
+        var key_buffer = w__generate_key(serial_code_maybe, [], seed_bytes);
         return y__bytes_to_string(key_buffer, 0, 8);
     }
 
@@ -656,7 +655,7 @@ public class h
 
         d(serial_code_format, num + 1, 40 - num - 2);
         serial_code_format[39] = 0;
-        byte[] array = w(serial_code_format, node_id_bytes, encoded_seed_buffer);
+        byte[] array = w__generate_key(serial_code_format, node_id_bytes, encoded_seed_buffer);
         int num2 = 0;
         for (num2 = 0; num2 < 40; num2++)
         {
