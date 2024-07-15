@@ -267,6 +267,9 @@ public class h
         }
     }
 
+    /**
+     * Decode/Encode buffer
+     */
     protected internal static int R(byte[] buffer, int offset)
     {
         int i;
@@ -370,6 +373,12 @@ public class h
         return array;
     }
 
+    public const int KEY_VALID = 0;
+    public const int KEY_EMPTY = 1;
+    public const int KEY_INVALID = 2;
+    public const int KEY_INVALID_LENGTH = 3;
+    public const int KEY_ERROR = 4;
+
     public static int L(byte[] serial_from_license_file, byte[] node_id_buffer, byte[] key_from_license_file, byte[] signature_bytes)
     {
         var key_bytes_cleaned = new byte[31];
@@ -391,16 +400,16 @@ public class h
             if (src_byte != 0) num = 0;
 
             if (src_byte == 0)
-                return 1;
+                return KEY_EMPTY;
 
             if (src_byte != generated_byte)
-                return 2;
+                return KEY_INVALID;
         }
 
         if (key_bytes_cleaned[12] != 0)
-            return 3;
+            return KEY_INVALID_LENGTH;
 
-        return num != 0 ? 4 : 0;
+        return num != 0 ? KEY_ERROR : KEY_VALID;
     }
 
     public static string M(string P_0, string P_1, string expiry_date, string productKey, string P_4, bool P_5)
@@ -510,22 +519,24 @@ public class h
         return y(the_key_perhaps, 0, 8);
     }
 
-    public static byte[] _h(byte[] P_0, int P_1)
+    public static byte[] _h(byte[] buf, int last_offset)
     {
+        var before = buf;
+        var s_before = Encoding.Default.GetString(buf);
         byte[] array =
         [
             48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
             65, 66, 67, 68, 69, 70
         ];
-        byte[] array2 = new byte[P_1 * 2];
-        for (int num = P_1 - 1; num >= 0; num--) {
-            byte b = P_0[num];
-            P_0[2 * num + 1] = array[b & 0xF];
+        for (var index = last_offset - 1; index >= 0; index--) {
+            var b = buf[index];
+            buf[2 * index + 1] = array[b & 15];
             b >>= 4;
-            P_0[2 * num] = array[b];
+            buf[2 * index] = array[b];
         }
-
-        return P_0;
+        
+        var s_after = Encoding.Default.GetString(buf);
+        return buf;
     }
 
     public static byte[] j(byte[] rtkBuf, int length)
