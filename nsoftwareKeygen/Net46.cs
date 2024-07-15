@@ -8,12 +8,15 @@ namespace ipw240x;
 
 public class h
 {
-    internal static byte[] O;
+    /**
+     * alpha numeric table: 0-9, A-Z
+     */
+    internal static byte[] O__ALPHA_NUM_TBL = Encoding.ASCII.GetBytes("0123456789ABCDEFGHJKMNPRSTUVWXYZ");
 
     /**
      * Get string from bytes (default encoding)
      */
-    public static string y(byte[] buf, int index, int length) =>
+    public static string y__bytes_to_string(byte[] buf, int index, int length) =>
         Encoding.Default.GetString(buf, index, length);
 
     /**
@@ -190,58 +193,64 @@ public class h
 
     public static void init()
     {
-        O = new byte[32];
-        O[0] = 48;
-        O[1] = 49;
-        O[2] = 50;
-        O[3] = 51;
-        O[4] = 52;
-        O[5] = 53;
-        O[6] = 54;
-        O[7] = 55;
-        O[8] = 56;
-        O[9] = 57;
-        O[10] = 65;
-        O[11] = 66;
-        O[12] = 67;
-        O[13] = 68;
-        O[14] = 69;
-        O[15] = 70;
-        O[16] = 71;
-        O[17] = 72;
-        O[18] = 74;
-        O[19] = 75;
-        O[20] = 77;
-        O[21] = 78;
-        O[22] = 80;
-        O[23] = 82;
-        O[24] = 83;
-        O[25] = 84;
-        O[26] = 85;
-        O[27] = 86;
-        O[28] = 87;
-        O[29] = 88;
-        O[30] = 89;
-        O[31] = 90;
+        O__ALPHA_NUM_TBL = new byte[32];
+        O__ALPHA_NUM_TBL[0] = 48;
+        O__ALPHA_NUM_TBL[1] = 49;
+        O__ALPHA_NUM_TBL[2] = 50;
+        O__ALPHA_NUM_TBL[3] = 51;
+        O__ALPHA_NUM_TBL[4] = 52;
+        O__ALPHA_NUM_TBL[5] = 53;
+        O__ALPHA_NUM_TBL[6] = 54;
+        O__ALPHA_NUM_TBL[7] = 55;
+        O__ALPHA_NUM_TBL[8] = 56;
+        O__ALPHA_NUM_TBL[9] = 57;
+        O__ALPHA_NUM_TBL[10] = 65;
+        O__ALPHA_NUM_TBL[11] = 66;
+        O__ALPHA_NUM_TBL[12] = 67;
+        O__ALPHA_NUM_TBL[13] = 68;
+        O__ALPHA_NUM_TBL[14] = 69;
+        O__ALPHA_NUM_TBL[15] = 70;
+        O__ALPHA_NUM_TBL[16] = 71;
+        O__ALPHA_NUM_TBL[17] = 72;
+        O__ALPHA_NUM_TBL[18] = 74;
+        O__ALPHA_NUM_TBL[19] = 75;
+        O__ALPHA_NUM_TBL[20] = 77;
+        O__ALPHA_NUM_TBL[21] = 78;
+        O__ALPHA_NUM_TBL[22] = 80;
+        O__ALPHA_NUM_TBL[23] = 82;
+        O__ALPHA_NUM_TBL[24] = 83;
+        O__ALPHA_NUM_TBL[25] = 84;
+        O__ALPHA_NUM_TBL[26] = 85;
+        O__ALPHA_NUM_TBL[27] = 86;
+        O__ALPHA_NUM_TBL[28] = 87;
+        O__ALPHA_NUM_TBL[29] = 88;
+        O__ALPHA_NUM_TBL[30] = 89;
+        O__ALPHA_NUM_TBL[31] = 90;
+        var s = Encoding.ASCII.GetString(O__ALPHA_NUM_TBL);
     }
 
-    internal static byte d(byte leByte) => O[leByte % 32];
+    internal static byte d__translate_from_LUT(byte leByte) => O__ALPHA_NUM_TBL[leByte % 32];
 
-    internal static sbyte U(byte theByte)
+    internal static sbyte U__translate_byte(byte theByte)
     {
+        // lower to UPPERCASE
         if (theByte is >= 97 and <= 122) theByte -= 32;
 
+        // I => 1
         if (theByte == 73) theByte = 49;
 
+        // L => 1
         if (theByte == 76) theByte = 49;
 
+        // O => 0
         if (theByte == 79) theByte = 48;
 
+        // Q => 0
         if (theByte == 81) theByte = 48;
 
-        for (sbyte b = 0; b < 32; b++)
-            if (theByte == O[b])
-                return b;
+        for (sbyte ix = 0; ix < 32; ix++)
+            if (theByte == O__ALPHA_NUM_TBL[ix])
+                return ix;
 
         return -1;
     }
@@ -270,17 +279,17 @@ public class h
     /**
      * Decode/Encode buffer
      */
-    protected internal static int R(byte[] buffer, int offset)
+    protected internal static int R___decode_buffer(byte[] buffer, int offset)
     {
         int i;
         int num;
         for (i = num = offset; buffer[i] != 0; i++)
         {
-            var b = U(buffer[i]);
+            var b = U__translate_byte(buffer[i]);
             if (-1 == b)
                 buffer[i] = 0;
             else
-                buffer[num++] = d((byte)b);
+                buffer[num++] = d__translate_from_LUT((byte)b);
         }
 
         for (var j = num; j < i; j++) buffer[j] = 0;
@@ -306,7 +315,7 @@ public class h
         P(array, length * 8);
         for (int j = 0; j < div5_8bit; j++)
         {
-            array[j] = d(array[j]);
+            array[j] = d__translate_from_LUT(array[j]);
         }
 
         array[div5_8bit] = 0;
@@ -334,7 +343,7 @@ public class h
         var resultBuffer = new byte[14];
         // copy bufFirst40 to wokr buffer
         y__array_copy(bufFirst40, 0, workBuffer, 0, bufFirst40.Length);
-        var num = R(workBuffer, 0);
+        var num = R___decode_buffer(workBuffer, 0);
         if (num == 0)
             return resultBuffer;
 
@@ -350,7 +359,7 @@ public class h
             }
 
             workBuffer[num2] = 0;
-            num += R(workBuffer, num);
+            num += R___decode_buffer(workBuffer, num);
         }
 
         while (num % 8 != 0) workBuffer[num++] = 0;
@@ -387,21 +396,19 @@ public class h
     public static int L(byte[] serial_from_license_file, byte[] node_id_buffer, byte[] key_from_license_file,
         byte[] signature_bytes)
     {
-        var key_bytes_cleaned = new byte[31];
+        var key_buffer = new byte[31];
         int i;
-        for (i = 0; i < key_bytes_cleaned.Length - 1 && key_from_license_file[i] != 0; i++)
-        {
-            key_bytes_cleaned[i] = key_from_license_file[i];
-        }
+        for (i = 0; i < key_buffer.Length - 1 && key_from_license_file[i] != 0; i++)
+            key_buffer[i] = key_from_license_file[i];
 
-        key_bytes_cleaned[i] = 0;
-        R(key_bytes_cleaned, 0);
+        key_buffer[i] = 0;
+        R___decode_buffer(key_buffer, 0);
         var generated_key = w(serial_from_license_file, node_id_buffer, signature_bytes);
         var num = 1;
-        var key_length = key_bytes_cleaned[6] == 0 ? 6 : 12; // 6 or 12 chars key
+        var key_length = key_buffer[6] == 0 ? 6 : 12; // 6 or 12 chars key
         for (i = 0; i < key_length; i++)
         {
-            var src_byte = key_bytes_cleaned[i];
+            var src_byte = key_buffer[i];
             var generated_byte = generated_key[i];
             var c = (char)src_byte;
 
@@ -414,7 +421,7 @@ public class h
                 return KEY_INVALID;
         }
 
-        if (key_bytes_cleaned[12] != 0)
+        if (key_buffer[12] != 0)
             return KEY_INVALID_LENGTH;
 
         return num != 0 ? KEY_ERROR : KEY_VALID;
@@ -429,7 +436,9 @@ public class h
             P_1 = null;
         }
 
-        var buffer = ((P_1 != null) ? j(utf8StrToBytes(P_1 + "\0"), 128) : utf8StrToBytes(productKey + "\0"));
+        var buffer = ((P_1 != null)
+            ? j__convert_runtimekey_to_serialcode(utf8StrToBytes(P_1 + "\0"), 128)
+            : utf8StrToBytes(productKey + "\0"));
         if (P_1 != null)
         {
             buffer[64] = 0;
@@ -489,7 +498,7 @@ public class h
         var build_num = "n/a";
         if (f_license_type_is_royalty_free_server(b))
         {
-            R(buffer, 0);
+            R___decode_buffer(buffer, 0);
             build_num = string.Concat(c(buffer));
         }
 
@@ -545,7 +554,7 @@ public class h
             100, 121, 114, 116, 104, 83
         ];
         var key_buffer = w(serial_code_maybe, [], seed_bytes);
-        return y(key_buffer, 0, 8);
+        return y__bytes_to_string(key_buffer, 0, 8);
     }
 
     public static byte[] _h(byte[] buf, int last_offset)
@@ -569,7 +578,7 @@ public class h
         return buf;
     }
 
-    public static byte[] j(byte[] rtkBuf, int length)
+    public static byte[] j__convert_runtimekey_to_serialcode(byte[] rtkBuf, int length)
     {
         var orig = Encoding.ASCII.GetString(rtkBuf);
         var after = string.Empty;
@@ -639,7 +648,7 @@ public class h
             dest_buffer[0] = 0;
         }
 
-        var num = R(serial_code_format, 0);
+        var num = R___decode_buffer(serial_code_format, 0);
         if (serial_code_format[0] == 0)
         {
             return dest_buffer;
@@ -688,9 +697,9 @@ public class h
             return INVALID_RTK;
 
         // ?? decode buffer
-        rtkBuf = j(rtkBuf, 128);
+        rtkBuf = j__convert_runtimekey_to_serialcode(rtkBuf, 128);
         rtkBuf[64] = 0;
-        var s = Encoding.ASCII.GetString(rtkBuf);
+        var s = y__bytes_to_string(rtkBuf, 0, 64);
         if (rtkBuf[0] == 0)
             return EMPTY_RTK;
 
@@ -704,6 +713,9 @@ public class h
         for (index = 40; index < 49; index++) node_id_9[index - 40] = rtkBuf[index];
 
         for (index = 50; index < 62; index++) key_from_license_16[index - 50] = rtkBuf[index];
+        var serial__str = Encoding.Default.GetString(serial_from_license_40);
+        var node_str = Encoding.Default.GetString(node_id_9);
+        var key_str = Encoding.Default.GetString(key_from_license_16);
 
         var result = L(serial_from_license_40, node_id_9, key_from_license_16, sigBuf);
         if (result != 0)
@@ -718,14 +730,10 @@ public class h
                 return 0;
             case 'X':
             {
-                byte[] array4 = utf8StrToBytes(L());
+                var node_id = utf8StrToBytes(L());
                 for (index = 0; index < 8; index++)
-                {
-                    if (array4[index] != rtkBuf[40 + index])
-                    {
+                    if (node_id[index] != rtkBuf[40 + index])
                         return 20;
-                    }
-                }
 
                 return _xh(rtkBuf);
             }
@@ -734,16 +742,10 @@ public class h
             case 'C':
             case 'F':
                 if (prodCode == 0)
-                {
                     return result;
-                }
 
-                if (prodCode != 10 * (rtkBuf[6] - 48) + rtkBuf[7] - 48)
-                {
-                    return 11;
-                }
+                return prodCode != 10 * (rtkBuf[6] - 48) + rtkBuf[7] - 48 ? 11 : 0;
 
-                return 0;
             default:
                 return 10;
         }
@@ -815,7 +817,7 @@ public class h
     public static int _xh(byte[] P_0)
     {
         P_0[P_0.Length - 1] = 0;
-        R(P_0, 0);
+        R___decode_buffer(P_0, 0);
         if (i__license_type_is_trial(P_0[5]))
         {
             int num = 10 * (P_0[12] - 48) + (P_0[13] - 48);
@@ -845,7 +847,7 @@ public class h
     public static int w(byte[] P_0)
     {
         P_0[P_0.Length - 1] = 0;
-        R(P_0, 0);
+        R___decode_buffer(P_0, 0);
         if (i__license_type_is_trial(P_0[5]))
         {
             int num = 10 * (P_0[12] - 48) + (P_0[13] - 48);
@@ -1195,7 +1197,7 @@ public sealed class M : h
             }
         }
 
-        R(serialDecodedBytes, 0);
+        R___decode_buffer(serialDecodedBytes, 0);
         if (serialDecodedBytes[0] == 0)
         {
             return NULL_LICENSE_KEY;
@@ -1220,7 +1222,7 @@ public sealed class M : h
 
         try
         {
-            var label = y(node_id_buffer, 0, 8);
+            var label = y__bytes_to_string(node_id_buffer, 0, 8);
             if (label[0] == '*')
             {
                 label = "*";
@@ -1365,7 +1367,7 @@ public sealed class M : h
         var dest_buffer = new byte[129];
         var serial_code_format = serialCode + "                                           \0";
         S(dest_buffer, sM.f(serial_code_format, null), seed_buffer);
-        return y(dest_buffer, 0, 128);
+        return y__bytes_to_string(dest_buffer, 0, 128);
     }
 
     /**
