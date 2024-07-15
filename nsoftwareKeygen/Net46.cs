@@ -111,8 +111,14 @@ public class h
         };
     }
 
+    /**
+     * License is Royalty-Free, Single Control (C,F) or Single-Server, Single Control (G,T)
+     */
     public static bool y(byte lic_typ) => lic_typ is 67 or 70 or 71 or 84;
 
+    /**
+     * License is Royalty-free (B) or Trial (Z)
+     */
     public static bool K(byte lic_typ) => lic_typ is 66 or 90;
 
     internal static void l(uint[] P_0, uint[] P_1)
@@ -362,33 +368,33 @@ public class h
         return array;
     }
 
-    public static int L(byte[] buf40, byte[] buf9, byte[] buf16, byte[] signatureBytes)
+    public static int L(byte[] serialDecodedBytes_40, byte[] node_id_buffer, byte[] key_bytes, byte[] signature_bytes)
     {
-        var buf31 = new byte[31];
+        var key_bytes_cleaned = new byte[31];
         int i;
-        for (i = 0; i < buf31.Length - 1 && buf16[i] != 0; i++) {
-            buf31[i] = buf16[i];
+        for (i = 0; i < key_bytes_cleaned.Length - 1 && key_bytes[i] != 0; i++) {
+            key_bytes_cleaned[i] = key_bytes[i];
         }
 
-        buf31[i] = 0;
-        R(buf31, 0);
-        byte[] array2 = w(buf40, buf9, signatureBytes);
+        key_bytes_cleaned[i] = 0;
+        R(key_bytes_cleaned, 0);
+        byte[] array2 = w(serialDecodedBytes_40, node_id_buffer, signature_bytes);
         int num = 1;
-        for (i = 0; i < (buf31[6] == 0 ? 6 : 12); i++) {
-            if (buf31[i] != 0) {
+        for (i = 0; i < (key_bytes_cleaned[6] == 0 ? 6 : 12); i++) {
+            if (key_bytes_cleaned[i] != 0) {
                 num = 0;
             }
 
-            if (buf31[i] == 0) {
+            if (key_bytes_cleaned[i] == 0) {
                 return 1;
             }
 
-            if (buf31[i] != array2[i]) {
+            if (key_bytes_cleaned[i] != array2[i]) {
                 return 2;
             }
         }
 
-        if (buf31[12] != 0)
+        if (key_bytes_cleaned[12] != 0)
             return 3;
         return num != 0 ? 4 : 0;
     }
@@ -556,42 +562,42 @@ public class h
         return rtkBuf;
     }
 
-    public static byte[] x(byte[] P_0, byte[] P_1, byte[] P_2, byte[] P_3)
+    public static byte[] x(byte[] dest_buffer, byte[] serial_code_format, byte[] node_id_bytes, byte[] encoded_seed_buffer)
     {
-        if (P_0 != null) {
-            P_0[0] = 0;
+        if (dest_buffer != null) {
+            dest_buffer[0] = 0;
         }
 
-        int num = R(P_1, 0);
-        if (P_1[0] == 0) {
-            return P_0;
+        var num = R(serial_code_format, 0);
+        if (serial_code_format[0] == 0) {
+            return dest_buffer;
         }
 
-        d(P_1, num + 1, 40 - num - 2);
-        P_1[39] = 0;
-        byte[] array = w(P_1, P_2, P_3);
+        d(serial_code_format, num + 1, 40 - num - 2);
+        serial_code_format[39] = 0;
+        byte[] array = w(serial_code_format, node_id_bytes, encoded_seed_buffer);
         int num2 = 0;
         for (num2 = 0; num2 < 40; num2++) {
-            P_0[num2] = P_1[num2];
+            dest_buffer[num2] = serial_code_format[num2];
         }
 
         for (num2 = 40; num2 < 48; num2++) {
-            P_0[num2] = P_2[num2 - 40];
+            dest_buffer[num2] = node_id_bytes[num2 - 40];
         }
 
         for (num2 = 50; num2 < 62; num2++) {
-            P_0[num2] = array[num2 - 50];
+            dest_buffer[num2] = array[num2 - 50];
         }
 
-        P_0 = _h(P_0, 64);
-        P_0[128] = 0;
-        return P_0;
+        dest_buffer = _h(dest_buffer, 64);
+        dest_buffer[128] = 0;
+        return dest_buffer;
     }
 
-    public static byte[] S(byte[] P_0, byte[] P_1, byte[] P_2)
+    public static byte[] S(byte[] dest_buffer, byte[] serial_code_format, byte[] encoded_seed_buffer)
     {
-        byte[] array = utf8StrToBytes(L());
-        return x(P_0, P_1, array, P_2);
+        var node_id_bytes = utf8StrToBytes(L());
+        return x(dest_buffer, serial_code_format, node_id_bytes, encoded_seed_buffer);
     }
 
     private const int INVALID_RTK = 17;
@@ -962,11 +968,14 @@ public sealed class M : h
         return null;
     }
 
+    public const int NULL_LICENSE_KEY = 7;
+    public const int INVALIDE_LICENSE_TYPE = 10;
+
     private static int c(string RunTimeLicenseCode, byte[] signatureBytes, ref string serial, ref byte[] serialDecodedBytes, ref string valIPNJA)
     {
         byte[] key_bytes;
         Hashtable? hashtable = null;
-        byte[] array2 =
+        byte[] node_id_buffer =
         [
             42, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -1054,29 +1063,31 @@ public sealed class M : h
                 throw new Exception("Error reading registry: " + ex.Message);
             }
             catch (Exception) {
-                return 6;
+                return ERROR_READING_REGISTRY;
             }
         }
 
         R(serialDecodedBytes, 0);
         if (serialDecodedBytes[0] == 0) {
-            return 7;
+            return NULL_LICENSE_KEY;
         }
 
-        if (!A(serialDecodedBytes[5])) {
-            return 10;
+        var license_type_byte = serialDecodedBytes[5];
+
+        if (!A(license_type_byte)) {
+            return INVALIDE_LICENSE_TYPE;
         }
 
-        if (K(serialDecodedBytes[5])) {
-            array2[0] = 42;
-            array2[1] = 0;
+        if (K(license_type_byte)) {
+            node_id_buffer[0] = 42; // "*"
+            node_id_buffer[1] = 0;
         }
         else {
-            array2 = sM.f(L(), null);
+            node_id_buffer = sM.f(L(), null);
         }
 
         try {
-            string label = y(array2, 0, 8);
+            var label = y(node_id_buffer, 0, 8);
             if (label[0] == '*') {
                 label = "*";
             }
@@ -1102,7 +1113,7 @@ public sealed class M : h
             return 8;
         }
 
-        num = array2[0] != 42 ? L(serialDecodedBytes, array2, key_bytes, signatureBytes) : L(serialDecodedBytes, null, key_bytes, signatureBytes);
+        num = node_id_buffer[0] != 42 ? L(serialDecodedBytes, node_id_buffer, key_bytes, signatureBytes) : L(serialDecodedBytes, null, key_bytes, signatureBytes);
         if (num == 0) {
             num = M(serialDecodedBytes, 'J');
             if (num != 0) {
@@ -1124,6 +1135,7 @@ public sealed class M : h
         return _xh(serialDecodedBytes);
     }
 
+    private const int ERROR_READING_REGISTRY = 6;
     private const int KEY_NOT_FOUND = 8;
 
 
@@ -1131,9 +1143,9 @@ public sealed class M : h
     private const int EXPIRED_TRIAL = 9;
     private const int INVALID_BUILD_NUMBER = 14;
 
-    internal static string h(int prodCode, Type asmType, ref int resultCode, ref string serialCode, bool trialNag)
+    internal static string h(int prodCode, Type? asmType, ref int error_code, ref string serialCode, bool trialNag)
     {
-        string text = "IPWorks 2024";
+        var text = "IPWorks 2024";
         if (asmType != null) {
             object obj = text;
             text = string.Concat(obj, " (", asmType, " component)");
@@ -1144,11 +1156,11 @@ public sealed class M : h
         x(signature_internal);
         byte[]? outBuffer = null;
         var licenseFromFile = "";
-        resultCode = t("SOFTWARE\\nsoftware\\RT\\IPNJA", signature_internal, prodCode, ref serialCode, ref outBuffer, ref licenseFromFile);
-        if (resultCode != 0) {
-            var code = (char)(65 + resultCode);
+        error_code = t("SOFTWARE\\nsoftware\\RT\\IPNJA", signature_internal, prodCode, ref serialCode, ref outBuffer, ref licenseFromFile);
+        if (error_code != 0) {
+            var code = (char)(65 + error_code);
             var node_id = L();
-            switch (resultCode) {
+            switch (error_code) {
                 case LICENSE_NOT_ACTIVATED:
                     text +=
                         "This system contains a license for IPWorks 2024 that has been installed but not activated.  You must run setup in order to activate the license on this system [code: {0} nodeid: {1}].";
@@ -1186,25 +1198,28 @@ public sealed class M : h
         }
 
         if (Environment.OSVersion.Platform == PlatformID.WinCE) {
-            return null;
+            return string.Empty;
         }
 
         if (i(outBuffer[5])) {
-            return null;
+            return string.Empty;
         }
 
         if (!o(outBuffer[5])) {
-            return null;
+            return string.Empty;
         }
 
-        byte[] array3 = new byte[16];
-        d(array3);
-        byte[] array4 = new byte[129];
-        string text3 = serialCode + "                                           \0";
-        S(array4, sM.f(text3, null), array3);
-        return y(array4, 0, 128);
+        byte[] seed_buffer = new byte[16];
+        d(seed_buffer);
+        var dest_buffer = new byte[129];
+        var serial_code_format = serialCode + "                                           \0";
+        S(dest_buffer, sM.f(serial_code_format, null), seed_buffer);
+        return y(dest_buffer, 0, 128);
     }
 
+    /**
+     * Initialize seed buffer (encoded)
+     */
     private static void n(byte[] buf, int encode)
     {
         int num = 0;
@@ -1229,9 +1244,9 @@ public sealed class M : h
         }
     }
 
-    private static void d(byte[] P_0)
+    private static void d(byte[] out_buf)
     {
-        n(P_0, 1);
+        n(out_buf, 1);
     }
 }
 
