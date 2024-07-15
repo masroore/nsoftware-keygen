@@ -12,24 +12,30 @@ public class h
 {
     internal static byte[] O;
 
-    public static string y(byte[] P_0, int P_1, int P_2)
-    {
-        return Encoding.Default.GetString(P_0, P_1, P_2);
-    }
+    /**
+     * Get string from bytes (default encoding)
+     */
+    public static string y(byte[] buf, int index, int length) =>
+        Encoding.Default.GetString(buf, index, length);
 
-    public static byte[] utf8StrToBytes(string str)
-    {
-        return Encoding.UTF8.GetBytes(str);
-    }
+    /**
+     * Get string from bytes (UTF8)
+     */
+    public static byte[] utf8StrToBytes(string str) => Encoding.UTF8.GetBytes(str);
 
-    public static void y(byte[] bufFirst40, int srcOffset, byte[] bufDest, int destOffset, int length)
-    {
+    /**
+     * Array copy from src to dest
+     */
+    public static void y(byte[] bufFirst40, int srcOffset, byte[] bufDest, int destOffset, int length) =>
         Array.Copy(bufFirst40, srcOffset, bufDest, destOffset, length);
-    }
 
-    public static bool A(byte P_0)
+    /**
+     * Check license type (FULL version)
+     * A-G,M,P,S,T,V,X,Z is okay
+     */
+    public static bool A(byte lic_typ)
     {
-        return (char)P_0 switch
+        return (char)lic_typ switch
         {
             'A' => true,
             'B' => true,
@@ -38,20 +44,23 @@ public class h
             'E' => true,
             'F' => true,
             'G' => true,
+            'M' => true,
+            'P' => true,
+            'S' => true,
+            'T' => true,
             'V' => true,
             'X' => true,
             'Z' => true,
-            'S' => true,
-            'T' => true,
-            'P' => true,
-            'M' => true,
             _   => false,
         };
     }
 
-    public static string v(byte P_0)
+    /**
+     * Get license type description
+     */
+    public static string v(byte lic_typ)
     {
-        return (char)P_0 switch
+        return (char)lic_typ switch
         {
             'A' => "Royalty-Free",
             'B' => "Royalty-Free",
@@ -67,32 +76,29 @@ public class h
             'T' => "Single-Server, Single Control",
             'P' => "Single-Server, Processor Bound, All Controls",
             'M' => "Metered",
-            _   => string.Concat((char)P_0),
+            _   => string.Concat((char)lic_typ),
         };
     }
 
-    public static bool i(byte P_0)
-    {
-        return P_0 == 88 || P_0 == 90;
-    }
+    public static bool i(byte lic_typ) => lic_typ is 88 or 90;
 
-    public static bool p(byte P_0)
-    {
-        return P_0 == 80;
-    }
+    public static bool p(byte lic_typ) => lic_typ == 80;
 
-    public static bool f(byte b)
+    public static bool f(byte lic_typ)
     {
         var x = (char)68;
         x = (char)69;
         x = (char)70;
         x = (char)71;
-        return b is 68 or 69 or 70 or 71;
+        return lic_typ is 68 or 69 or 70 or 71;
     }
 
-    public static bool o(byte P_0)
+    /*
+     * Check if limited license type
+     */
+    public static bool o(byte lic_typ)
     {
-        return (char)P_0 switch
+        return (char)lic_typ switch
         {
             'A' => true,
             'B' => true,
@@ -105,15 +111,9 @@ public class h
         };
     }
 
-    public static bool y(byte P_0)
-    {
-        return P_0 == 67 || P_0 == 70 || P_0 == 71 || P_0 == 84;
-    }
+    public static bool y(byte lic_typ) => lic_typ is 67 or 70 or 71 or 84;
 
-    public static bool K(byte P_0)
-    {
-        return P_0 == 66 || P_0 == 90;
-    }
+    public static bool K(byte lic_typ) => lic_typ is 66 or 90;
 
     internal static void l(uint[] P_0, uint[] P_1)
     {
@@ -451,15 +451,18 @@ public class h
         return text.Replace("[lastValidBuild]", build_num);
     }
 
+    /**
+     * Get the machine name
+     */
     public static string L()
     {
-        string text = "";
+        var machine_name = "";
         try {
-            text = Environment.MachineName;
+            machine_name = Environment.MachineName;
+            string environmentVariable = Environment.GetEnvironmentVariable("_CLUSTER_NETWORK_NAME_");
             try {
-                string environmentVariable = Environment.GetEnvironmentVariable("_CLUSTER_NETWORK_NAME_");
-                if (environmentVariable != null && environmentVariable.Length > 0) {
-                    text = (string)Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters").GetValue("NV Hostname");
+                if (environmentVariable is { Length: > 0 }) {
+                    machine_name = (string)Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters").GetValue("NV Hostname");
                 }
             }
             catch { }
@@ -468,21 +471,21 @@ public class h
             return "00000000";
         }
 
-        return l(text);
+        return l(machine_name);
     }
 
-    public static string l(string P_0)
+    public static string l(string machine_name)
     {
-        byte[] array = new byte[100];
-        byte[] array2 = utf8StrToBytes(P_0);
-        y(array2, 0, array, 1, array2.Length);
+        var array = new byte[100];
+        var machine_name_utf_bytes = utf8StrToBytes(machine_name);
+        y(machine_name_utf_bytes, 0, array, 1, machine_name_utf_bytes.Length);
         array[0] = 65;
-        byte[] array3 = new byte[16]
-        {
+        byte[] seed =
+        [
             69, 110, 105, 107, 97, 109, 69, 114, 117, 104,
             100, 121, 114, 116, 104, 83
-        };
-        byte[] array4 = w(array, [], array3);
+        ];
+        var array4 = w(array, [], seed);
         return y(array4, 0, 8);
     }
 
@@ -834,12 +837,13 @@ public sealed class M : h
         return h(prodCode, asmType, ref transformResult, ref text, true);
     }
 
-    internal static void W(string P_0, string P_1)
+    internal static void W(string some_kind_of_product_type, string exception_tpl)
     {
-        bool flag = false;
-        if (P_0.Length >= 10 && ((flag && P_0.IndexOf("1DEV", StringComparison.Ordinal) == 6) || P_0.IndexOf("1DSK", StringComparison.Ordinal) == 6 ||
-                                 (flag && P_0.IndexOf("1SUB", StringComparison.Ordinal) == 6)) && D()) {
-            throw new Exception(string.Format(P_1, 'Z', L()));
+        var flag = false;
+        if (some_kind_of_product_type.Length >= 10 && ((flag && some_kind_of_product_type.IndexOf("1DEV", StringComparison.Ordinal) == 6) ||
+                                                       some_kind_of_product_type.IndexOf("1DSK", StringComparison.Ordinal) == 6 ||
+                                                       (flag && some_kind_of_product_type.IndexOf("1SUB", StringComparison.Ordinal) == 6)) && D()) {
+            throw new Exception(string.Format(exception_tpl, 'Z', L()));
         }
     }
 
@@ -879,9 +883,9 @@ public sealed class M : h
     }
 
     //t("SOFTWARE\\nsoftware\\RT\\IPNJA", signature_internal, prodCode, ref outMessage, ref array2, ref text2);
-    private static int t(string regKey, byte[] sigBytes, int prodCode, ref string serial, ref byte[] outBuffer, ref string validPNJA)
+    private static int t(string regKey, byte[] sigBytes, int prodCode, ref string serial, ref byte[] outBuffer, ref string serialFromLicenseFile)
     {
-        var num = c(regKey, sigBytes, ref serial, ref outBuffer, ref validPNJA);
+        var num = c(regKey, sigBytes, ref serial, ref outBuffer, ref serialFromLicenseFile);
         if (num != 0) {
             return num;
         }
@@ -899,7 +903,7 @@ public sealed class M : h
         }
 
         regKey = regKey + "\\" + prodCode;
-        num = c(regKey, sigBytes, ref serial, ref outBuffer, ref validPNJA);
+        num = c(regKey, sigBytes, ref serial, ref outBuffer, ref serialFromLicenseFile);
         switch (num) {
             case 6:
                 return 11;
