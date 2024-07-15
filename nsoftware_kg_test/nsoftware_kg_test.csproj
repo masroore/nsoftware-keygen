@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <LangVersion>latestmajor</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <TargetFramework>net46</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="nsoftware.CloudStorage" Version="24.0.8957" />
+      <PackageReference Include="nsoftware.IPWorks" Version="24.0.8949" />
+      <PackageReference Include="nsoftware.SecureBlackbox" Version="24.0.8955" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\nsoftwareKeygen\nsoftwareKeygen.csproj" />
+    </ItemGroup>
+
+</Project>
