@@ -370,30 +370,30 @@ public class h
         return array;
     }
 
-    public static int L(byte[] serialDecodedBytes_40, byte[] node_id_buffer, byte[] key_bytes, byte[] signature_bytes)
+    public static int L(byte[] serial_from_license_file, byte[] node_id_buffer, byte[] key_from_license_file, byte[] signature_bytes)
     {
         var key_bytes_cleaned = new byte[31];
         int i;
-        for (i = 0; i < key_bytes_cleaned.Length - 1 && key_bytes[i] != 0; i++) {
-            key_bytes_cleaned[i] = key_bytes[i];
+        for (i = 0; i < key_bytes_cleaned.Length - 1 && key_from_license_file[i] != 0; i++) {
+            key_bytes_cleaned[i] = key_from_license_file[i];
         }
 
         key_bytes_cleaned[i] = 0;
         R(key_bytes_cleaned, 0);
-        var array2 = w(serialDecodedBytes_40, node_id_buffer, signature_bytes);
+        var generated_key = w(serial_from_license_file, node_id_buffer, signature_bytes);
         var num = 1;
-        var the_6th_elem = key_bytes_cleaned[6];
-        var lerngth = the_6th_elem == 0 ? 6 : 12;
-        for (i = 0; i < lerngth; i++) {
-            var curr_byte = key_bytes_cleaned[i];
-            var c = (char)curr_byte;
+        var key_length = key_bytes_cleaned[6] == 0 ? 6 : 12; // 6 or 12 chars key
+        for (i = 0; i < key_length; i++) {
+            var src_byte = key_bytes_cleaned[i];
+            var generated_byte = generated_key[i];
+            var c = (char)src_byte;
 
-            if (curr_byte != 0) num = 0;
+            if (src_byte != 0) num = 0;
 
-            if (curr_byte == 0)
+            if (src_byte == 0)
                 return 1;
 
-            if (curr_byte != array2[i])
+            if (src_byte != generated_byte)
                 return 2;
         }
 
@@ -901,6 +901,9 @@ public sealed class M : h
         buf[num++] = 121;
         buf[num++] = 66;
         buf[num] = 101;
+
+        var xbuf = Encoding.ASCII.GetBytes("FiNAID1tuTqtudJF");
+        var b = buf == xbuf;
 
         if (decode != 0) G(buf, 78, 65);
     }
