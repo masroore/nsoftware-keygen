@@ -24,8 +24,8 @@ public class h
     /**
      * Array copy from src to dest
      */
-    public static void y(byte[] bufFirst40, int srcOffset, byte[] bufDest, int destOffset, int length) =>
-        Array.Copy(bufFirst40, srcOffset, bufDest, destOffset, length);
+    public static void y__array_copy(byte[] source, int srcOffset, byte[] dest, int destOffset, int length) =>
+        Array.Copy(source, srcOffset, dest, destOffset, length);
 
     /**
      * Check license type (FULL version)
@@ -341,15 +341,13 @@ public class h
 
     internal static byte[] P(byte[] bufFirst40, byte[] bufMiddle9, byte[] signatureBuf)
     {
-        byte[] workBuffer = new byte[301];
-        byte[] resultBuffer = new byte[14];
+        var workBuffer = new byte[301];
+        var resultBuffer = new byte[14];
         // copy bufFirst40 to wokr buffer
-        y(bufFirst40, 0, workBuffer, 0, bufFirst40.Length);
+        y__array_copy(bufFirst40, 0, workBuffer, 0, bufFirst40.Length);
         var num = R(workBuffer, 0);
         if (num == 0)
-        {
             return resultBuffer;
-        }
 
         if (bufMiddle9 is { Length: > 0 })
         {
@@ -366,17 +364,11 @@ public class h
             num += R(workBuffer, num);
         }
 
-        while (num % 8 != 0)
-        {
-            workBuffer[num++] = 0;
-        }
+        while (num % 8 != 0) workBuffer[num++] = 0;
 
-        for (int num2 = 0; num2 < num / 8; num2++)
+        for (var num2 = 0; num2 < num / 8; num2++)
         {
-            for (int i = 0; i < 8; i++)
-            {
-                resultBuffer[i] ^= workBuffer[8 * num2 + i];
-            }
+            for (int i = 0; i < 8; i++) resultBuffer[i] ^= workBuffer[8 * num2 + i];
 
             b(resultBuffer, 0, signatureBuf);
         }
@@ -385,16 +377,16 @@ public class h
     }
 
     /**
-     * Get 12 byte array - possibly the key
+     * Get 12 byte array - <b>possibly the key XXXX-XXXX-XXXX</b>
      */
-    internal static byte[] w(byte[] serial_code_40, byte[] node_id_9, byte[] signatureBuf)
+    internal static byte[] w(byte[] serial_code_40, byte[] node_id_8_chars, byte[] signatureBuf)
     {
-        var array = P(serial_code_40, node_id_9, signatureBuf);
-        array = u(array, 8);
-        var s1 = Encoding.Default.GetString(array);
-        array[12] = 0;
-        var s2 = Encoding.Default.GetString(array);
-        return array;
+        var key_buff = P(serial_code_40, node_id_8_chars, signatureBuf);
+        key_buff = u(key_buff, 8);
+        var s1 = Encoding.Default.GetString(key_buff);
+        key_buff[12] = 0;
+        var s2 = Encoding.Default.GetString(key_buff);
+        return key_buff;
     }
 
     public const int KEY_VALID = 0;
@@ -552,19 +544,19 @@ public class h
     /**
      * Get the serial key from machine name
      */
-    public static string l(string node_name)
+    public static string l(string node_id_8chars)
     {
         var serial_code_maybe = new byte[100];
-        var node_id_bytes = utf8StrToBytes(node_name);
-        y(node_id_bytes, 0, serial_code_maybe, 1, node_id_bytes.Length);
+        var node_id_bytes = utf8StrToBytes(node_id_8chars);
+        y__array_copy(node_id_bytes, 0, serial_code_maybe, 1, node_id_bytes.Length);
         serial_code_maybe[0] = 65; // "A"
         byte[] seed_bytes =
         [
             69, 110, 105, 107, 97, 109, 69, 114, 117, 104,
             100, 121, 114, 116, 104, 83
         ];
-        var the_key_perhaps = w(serial_code_maybe, [], seed_bytes);
-        return y(the_key_perhaps, 0, 8);
+        var key_buffer = w(serial_code_maybe, [], seed_bytes);
+        return y(key_buffer, 0, 8);
     }
 
     public static byte[] _h(byte[] buf, int last_offset)
@@ -684,52 +676,35 @@ public class h
     private const int INVALID_RTK = 17;
     private const int EMPTY_RTK = 18;
 
-    public static int T(byte[] rtkBuf, byte[] sigBuf, int prodCode)
+    public static int T(byte[]? rtkBuf, byte[] sigBuf, int prodCode)
     {
         if (rtkBuf == null)
-        {
             return INVALID_RTK;
-        }
 
-        int num = rtkBuf.Length - 1;
+        var num = rtkBuf.Length - 1;
         if (num < 128)
-        {
             return INVALID_RTK;
-        }
 
         // ?? decode buffer
         rtkBuf = j(rtkBuf, 128);
         rtkBuf[64] = 0;
         if (rtkBuf[0] == 0)
-        {
             return EMPTY_RTK;
-        }
 
         // split the 64 bytes array into 3 segments
         byte[] buf40 = new byte[40];
         byte[] buf9 = new byte[9];
         byte[] buf16 = new byte[16];
         int index;
-        for (index = 0; index < 40; index++)
-        {
-            buf40[index] = rtkBuf[index];
-        }
+        for (index = 0; index < 40; index++) buf40[index] = rtkBuf[index];
 
-        for (index = 40; index < 49; index++)
-        {
-            buf9[index - 40] = rtkBuf[index];
-        }
+        for (index = 40; index < 49; index++) buf9[index - 40] = rtkBuf[index];
 
-        for (index = 50; index < 62; index++)
-        {
-            buf16[index - 50] = rtkBuf[index];
-        }
+        for (index = 50; index < 62; index++) buf16[index - 50] = rtkBuf[index];
 
         int num3 = L(buf40, buf9, buf16, sigBuf);
         if (num3 != 0)
-        {
             return num3;
-        }
 
         switch ((char)B(rtkBuf[5]))
         {
