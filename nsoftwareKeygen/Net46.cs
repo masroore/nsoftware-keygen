@@ -918,51 +918,41 @@ public class h
 
 public sealed class M : h
 {
-    public static void n(int code, Type asmType, string runTimeKey) => l(code, asmType,
-        (runTimeKey != null) ? utf8StrToBytes(runTimeKey + "\0") : null);
+    public static void n(int code, Type asmType, string? runTimeKey) =>
+        l(code, asmType, runTimeKey != null ? utf8StrToBytes(runTimeKey + "\0") : null);
 
-    internal static void l(int code, Type asmType, byte[]? rtkBytes)
+    internal static void l(int code, Type? asmType, byte[]? rtkBytes)
     {
-        int num = 18;
+        var result = 18;
         if (rtkBytes != null)
         {
-            byte[] array = new byte[17];
+            var array = new byte[17];
             d(array);
-            num = T(rtkBytes, array, code);
-            if (num == 0)
-            {
-                num = k(rtkBytes, 'J');
-            }
+            result = T(rtkBytes, array, code);
+            if (result == 0) result = k(rtkBytes, 'J');
 
-            if (num == 0)
+            if (result == 0)
             {
-                num = i(rtkBytes, 8949);
-                if (num != 0)
+                result = i(rtkBytes, 8949);
+                if (result != 0)
                 {
-                    int num2 = ipw240x.h.c(rtkBytes);
-                    char c = (char)(65 + num);
-                    string text = L();
-                    string text2 = "IPWorks 2024";
-                    if (asmType != null)
-                    {
-                        object obj = text2;
-                        text2 = string.Concat(obj, " (", asmType, " component)");
-                    }
+                    var build_num = ipw240x.h.c(rtkBytes);
+                    var code_id = (char)(65 + result);
+                    var node_id = L();
+                    var err_message = "IPWorks 2024";
+                    if (asmType != null) err_message = string.Concat(err_message, " (", asmType, " component)");
 
-                    text2 +=
+                    err_message +=
                         ". The specified runtime license is only valid for use with IPWorks 2024 builds {0} and earlier. To use the current build ({1}), please generate a new runtime license from a valid license key. For more information, please visit www.nsoftware.com or email support@nsoftware.com [code: {2} nodeid: {3}].";
-                    throw new Exception(string.Format(text2, num2, 8949, c, text));
+                    throw new Exception(string.Format(err_message, build_num, 8949, code_id, node_id));
                 }
             }
         }
 
-        if (num != 0)
-        {
-            Q(code, asmType, ref num);
-        }
+        if (result != 0) Q(code, asmType, ref result);
     }
 
-    internal static string Q(int prodCode, Type asmType, ref int transformResult)
+    internal static string Q(int prodCode, Type? asmType, ref int transformResult)
     {
         string? text = null;
         return h(prodCode, asmType, ref transformResult, ref text, true);
