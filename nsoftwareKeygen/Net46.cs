@@ -132,52 +132,52 @@ public class h
         P_0[1] = num2;
     }
 
-    internal static uint b(byte[] P_0, int P_1)
+    internal static uint b(byte[] buf, int offset)
     {
-        uint num = P_0[P_1 + 3] & 0xFFu;
-        num = num * 256 + (uint)(P_0[P_1 + 2] & 0xFF);
-        num = num * 256 + (uint)(P_0[P_1 + 1] & 0xFF);
-        return num * 256 + (uint)(P_0[P_1] & 0xFF);
+        uint num = buf[offset + 3] & 0xFFu;
+        num = num * 256 + (uint)(buf[offset + 2] & 0xFF);
+        num = num * 256 + (uint)(buf[offset + 1] & 0xFF);
+        return num * 256 + (uint)(buf[offset] & 0xFF);
     }
 
-    internal static void a(uint P_0, byte[] P_1, int P_2)
+    internal static void a(uint le_byt, byte[] buffer, int offset)
     {
-        P_1[P_2++] = (byte)P_0;
-        P_1[P_2++] = (byte)((P_0 >> 8) & 0xFFu);
-        P_1[P_2++] = (byte)((P_0 >> 16) & 0xFFu);
-        P_1[P_2++] = (byte)((P_0 >> 24) & 0xFFu);
+        buffer[offset++] = (byte)le_byt;
+        buffer[offset++] = (byte)((le_byt >> 8) & 0xFFu);
+        buffer[offset++] = (byte)((le_byt >> 16) & 0xFFu);
+        buffer[offset++] = (byte)((le_byt >> 24) & 0xFFu);
     }
 
-    internal static void b(byte[] P_0, int P_1, byte[] P_2)
+    internal static void b(byte[] buf, int offset, byte[] buf2)
     {
         uint[] array = new uint[2];
         uint[] array2 = new uint[4];
         for (int i = 0; i < 2; i++) {
-            array[i] = b(P_0, P_1 + i * 4);
+            array[i] = b(buf, offset + i * 4);
         }
 
         for (int j = 0; j < 4; j++) {
-            array2[j] = b(P_2, P_1 + j * 4);
+            array2[j] = b(buf2, offset + j * 4);
         }
 
         l(array, array2);
         for (var k = 0; k < 2; k++) {
-            a(array[k], P_0, k * 4);
+            a(array[k], buf, k * 4);
         }
     }
 
-    internal static void P(byte[] P_0, int endOffset)
+    internal static void P(byte[] buf, int endOffset)
     {
         for (var index = endOffset - 1; index >= 0; index--) {
-            if ((P_0[index / 8] & (1 << index % 8)) != 0) {
-                P_0[index / 5] |= (byte)(1 << index % 5);
+            if ((buf[index / 8] & (1 << index % 8)) != 0) {
+                buf[index / 5] |= (byte)(1 << index % 5);
             }
             else {
-                P_0[index / 5] &= (byte)(~(1 << index % 5));
+                buf[index / 5] &= (byte)(~(1 << index % 5));
             }
 
             if (index % 5 == 0) {
-                P_0[index / 5] &= 31;
+                buf[index / 5] &= 31;
             }
         }
     }

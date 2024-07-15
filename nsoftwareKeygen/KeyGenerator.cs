@@ -232,7 +232,7 @@ public class KeyGenerator
         return Encoding.ASCII.GetString(productBytes);
     }
 
-    public static ProductKey GenerateRuntimeKey(nsoftwareProductType productType)
+    public static ProductKey Generate(nsoftwareProductType productType)
     {
         var rtk = "";
         var serial = "";
