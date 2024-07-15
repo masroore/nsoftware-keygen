@@ -6,8 +6,6 @@ using Microsoft.Win32;
 
 namespace ipw240x;
 
-public class Net46 { }
-
 public class h
 {
     internal static byte[] O;
@@ -37,23 +35,25 @@ public class h
     {
         return (char)lic_typ switch
         {
-            'A' => true,
-            'B' => true,
-            'C' => true,
-            'D' => true,
-            'E' => true,
-            'F' => true,
-            'G' => true,
-            'M' => true,
-            'P' => true,
-            'S' => true,
-            'T' => true,
-            'V' => true,
-            'X' => true,
-            'Z' => true,
-            _   => false,
+            'A'                              => true,
+            'B'                              => true,
+            'C'                              => true,
+            'D'                              => true,
+            'E'                              => true,
+            'F'                              => true,
+            'G'                              => true,
+            'M'                              => true,
+            'P'                              => true,
+            'S'                              => true,
+            'T'                              => true,
+            ROYALTY_FREE_VERSION_INDEPENDENT => true,
+            'X'                              => true,
+            'Z'                              => true,
+            _                                => false,
         };
     }
+
+    public const char ROYALTY_FREE_VERSION_INDEPENDENT = 'V';
 
     /**
      * Get license type description
@@ -62,21 +62,21 @@ public class h
     {
         return (char)lic_typ switch
         {
-            'A' => "Royalty-Free",
-            'B' => "Royalty-Free",
-            'C' => "Royalty-Free, Single Control",
-            'D' => "Royalty-Free",
-            'E' => "Single-Server, All Controls",
-            'F' => "Royalty-Free, Single Control",
-            'G' => "Single-Server, Single Control",
-            'V' => "Royalty-Free, Version Independent",
-            'X' => "Trial",
-            'Z' => "Trial",
-            'S' => "Single-Server, All Controls",
-            'T' => "Single-Server, Single Control",
-            'P' => "Single-Server, Processor Bound, All Controls",
-            'M' => "Metered",
-            _   => string.Concat((char)lic_typ),
+            'A'                              => "Royalty-Free",
+            'B'                              => "Royalty-Free",
+            'C'                              => "Royalty-Free, Single Control",
+            'D'                              => "Royalty-Free",
+            'E'                              => "Single-Server, All Controls",
+            'F'                              => "Royalty-Free, Single Control",
+            'G'                              => "Single-Server, Single Control",
+            ROYALTY_FREE_VERSION_INDEPENDENT => "Royalty-Free, Version Independent",
+            'X'                              => "Trial",
+            'Z'                              => "Trial",
+            'S'                              => "Single-Server, All Controls",
+            'T'                              => "Single-Server, Single Control",
+            'P'                              => "Single-Server, Processor Bound, All Controls",
+            'M'                              => "Metered",
+            _                                => string.Concat((char)lic_typ),
         };
     }
 
@@ -302,11 +302,19 @@ public class h
         return array;
     }
 
-    protected internal static void G(byte[] P_0, byte P_1, byte P_2)
+    /**
+     * Encodes buffer
+     */
+    protected internal static void G(byte[] buf, byte b78, byte b65)
     {
+        var before = buf;
+        var s_before = Encoding.Default.GetString(buf);
         for (var i = 0; i < 16; i++) {
-            P_0[i] = (byte)(P_0[i] + (P_1 - 48) + (P_2 - 48));
+            buf[i] = (byte)(buf[i] + (b78 - 48) + (b65 - 48));
         }
+
+        var after = buf;
+        var s_after = Encoding.Default.GetString(buf);
     }
 
     internal static byte[] P(byte[] bufFirst40, byte[] bufMiddle9, byte[] signatureBuf)
@@ -853,32 +861,32 @@ public sealed class M : h
         //return RtlLib.IsServerOS();
     }
 
-    private static void x(byte[] P_0)
+    private static void x(byte[] buf)
     {
-        v(P_0, 1);
+        v(buf, 1);
     }
 
-    private static void v(byte[] P_0, int P_1)
+    private static void v(byte[] buf, int decode)
     {
         int num = 0;
-        P_0[num++] = 51;
-        P_0[num++] = 79;
-        P_0[num++] = 90;
-        P_0[num++] = 109;
-        P_0[num++] = 83;
-        P_0[num++] = 82;
-        P_0[num++] = 76;
-        P_0[num++] = 49;
-        P_0[num++] = 68;
-        P_0[num++] = 103;
-        P_0[num++] = 100;
-        P_0[num++] = 51;
-        P_0[num++] = 51;
-        P_0[num++] = 121;
-        P_0[num++] = 66;
-        P_0[num++] = 101;
-        if (P_1 != 0) {
-            G(P_0, 78, 65);
+        buf[num++] = 51;
+        buf[num++] = 79;
+        buf[num++] = 90;
+        buf[num++] = 109;
+        buf[num++] = 83;
+        buf[num++] = 82;
+        buf[num++] = 76;
+        buf[num++] = 49;
+        buf[num++] = 68;
+        buf[num++] = 103;
+        buf[num++] = 100;
+        buf[num++] = 51;
+        buf[num++] = 51;
+        buf[num++] = 121;
+        buf[num++] = 66;
+        buf[num++] = 101;
+        if (decode != 0) {
+            G(buf, 78, 65);
         }
     }
 
@@ -1132,14 +1140,14 @@ public sealed class M : h
         }
 
         text += ". ";
-        byte[] signature_internal = new byte[16];
+        var signature_internal = new byte[16];
         x(signature_internal);
-        byte[] outBuffer = null;
+        byte[]? outBuffer = null;
         var licenseFromFile = "";
         resultCode = t("SOFTWARE\\nsoftware\\RT\\IPNJA", signature_internal, prodCode, ref serialCode, ref outBuffer, ref licenseFromFile);
         if (resultCode != 0) {
-            var c = (char)(65 + resultCode);
-            var arg = L();
+            var code = (char)(65 + resultCode);
+            var node_id = L();
             switch (resultCode) {
                 case LICENSE_NOT_ACTIVATED:
                     text +=
@@ -1164,7 +1172,7 @@ public sealed class M : h
                     break;
             }
 
-            throw new Exception(string.Format(text, c, arg));
+            throw new Exception(string.Format(text, code, node_id));
         }
 
         W(serialCode,
@@ -1197,27 +1205,27 @@ public sealed class M : h
         return y(array4, 0, 128);
     }
 
-    private static void n(byte[] P_0, int P_1)
+    private static void n(byte[] buf, int encode)
     {
         int num = 0;
-        P_0[num++] = 70;
-        P_0[num++] = 105;
-        P_0[num++] = 78;
-        P_0[num++] = 65;
-        P_0[num++] = 73;
-        P_0[num++] = 68;
-        P_0[num++] = 49;
-        P_0[num++] = 116;
-        P_0[num++] = 117;
-        P_0[num++] = 84;
-        P_0[num++] = 113;
-        P_0[num++] = 116;
-        P_0[num++] = 117;
-        P_0[num++] = 100;
-        P_0[num++] = 74;
-        P_0[num++] = 70;
-        if (P_1 != 0) {
-            G(P_0, 78, 65);
+        buf[num++] = 70;
+        buf[num++] = 105;
+        buf[num++] = 78;
+        buf[num++] = 65;
+        buf[num++] = 73;
+        buf[num++] = 68;
+        buf[num++] = 49;
+        buf[num++] = 116;
+        buf[num++] = 117;
+        buf[num++] = 84;
+        buf[num++] = 113;
+        buf[num++] = 116;
+        buf[num++] = 117;
+        buf[num++] = 100;
+        buf[num++] = 74;
+        buf[num++] = 70;
+        if (encode != 0) {
+            G(buf, 78, 65);
         }
     }
 

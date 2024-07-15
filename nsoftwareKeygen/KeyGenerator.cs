@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.Design;
 using System.Text;
+using ipw240x;
 using Microsoft.Win32;
 
 namespace nsoftwareKeygen;
@@ -237,10 +238,17 @@ public class KeyGenerator
         var rtk = "";
         var serial = "";
         serial += RandomString(5, false, true, true, false);
-        serial += "V";
+        serial += h.ROYALTY_FREE_VERSION_INDEPENDENT;
         serial += RandomString(16, false, true, true, false);
-        var node = GetNodeId().Substring(0, 8);
-        for (var i = 0; i < 22; i++) rtk += EncodingMap[serial[i]];
+        var nodeId = GetNodeId();
+        var node = nodeId.Substring(0, 8);
+        for (var i = 0; i < 22; i++)
+            rtk += EncodingMap[serial[i]];
+
+        /*var rtk2 = string.Empty;
+        foreach (var c in serial) {
+            rtk2 += $"{(byte)c:00}";
+        }*/
 
         for (var j = 22; j < 40; j++) rtk += "00";
 
