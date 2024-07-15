@@ -80,25 +80,27 @@ public class h
         };
     }
 
-    public static bool i(byte lic_typ) => lic_typ is 88 or 90;
+    /**
+     * License type is Z or X
+     */
+    public static bool i__license_type_is_trial(byte lic_typ)
+        => lic_typ is 88 or 90;
 
-    public static bool p(byte lic_typ) => lic_typ == 80;
+    /**
+     * License type is P
+     */
+    public static bool p_license_type_is_server_cpu_bound(byte lic_typ) => lic_typ == 80;
 
-    public static bool f(byte lic_typ)
-    {
-        var x = (char)68;
-        x = (char)69;
-        x = (char)70;
-        x = (char)71;
-        return lic_typ is 68 or 69 or 70 or 71;
-    }
+    /**
+     * License type is C / D / E / F
+     */
+    public static bool f_license_type_is_royalty_free_server(byte lic_typ) => lic_typ is 68 or 69 or 70 or 71;
 
     /*
      * Check if limited license type
      */
-    public static bool o(byte lic_typ)
-    {
-        return (char)lic_typ switch
+    public static bool o_is_limited_license_type(byte lic_typ) =>
+        (char)lic_typ switch
         {
             'A' => true,
             'B' => true,
@@ -109,17 +111,16 @@ public class h
             'Z' => true,
             _ => false,
         };
-    }
 
     /**
      * License is Royalty-Free, Single Control (C,F) or Single-Server, Single Control (G,T)
      */
-    public static bool y(byte lic_typ) => lic_typ is 67 or 70 or 71 or 84;
+    public static bool y_license_type_is_single_royalty_server(byte lic_typ) => lic_typ is 67 or 70 or 71 or 84;
 
     /**
      * License is Royalty-free (B) or Trial (Z)
      */
-    public static bool K(byte lic_typ) => lic_typ is 66 or 90;
+    public static bool K_license_is_royalty_or_trial(byte lic_typ) => lic_typ is 66 or 90;
 
     internal static void l(uint[] P_0, uint[] P_1)
     {
@@ -159,21 +160,12 @@ public class h
     {
         uint[] array = new uint[2];
         uint[] array2 = new uint[4];
-        for (int i = 0; i < 2; i++)
-        {
-            array[i] = b(buf, offset + i * 4);
-        }
+        for (int i = 0; i < 2; i++) array[i] = b(buf, offset + i * 4);
 
-        for (int j = 0; j < 4; j++)
-        {
-            array2[j] = b(buf2, offset + j * 4);
-        }
+        for (int j = 0; j < 4; j++) array2[j] = b(buf2, offset + j * 4);
 
         l(array, array2);
-        for (var k = 0; k < 2; k++)
-        {
-            a(array[k], buf, k * 4);
-        }
+        for (var k = 0; k < 2; k++) a(array[k], buf, k * 4);
     }
 
     internal static void P(byte[] buf, int endOffset)
@@ -254,12 +246,9 @@ public class h
         return -1;
     }
 
-    internal static byte B(byte leByte)
+    internal static byte B_char_to_uppercase(byte leByte)
     {
-        if (leByte is >= 97 and <= 122)
-        {
-            leByte -= 32;
-        }
+        if (leByte is >= 97 and <= 122) leByte -= 32;
 
         return leByte;
     }
@@ -486,7 +475,7 @@ public class h
         else if (b != 0)
         {
             license_type = v(b);
-            if (i(b))
+            if (i__license_type_is_trial(b))
             {
                 license_type = license_type + " (Expires on " + DateTime.Now.AddDays(w(buffer)).ToString("MM/dd/yyyy") +
                                ")";
@@ -498,7 +487,7 @@ public class h
         }
 
         var build_num = "n/a";
-        if (f(b))
+        if (f_license_type_is_royalty_free_server(b))
         {
             R(buffer, 0);
             build_num = string.Concat(c(buffer));
@@ -582,50 +571,63 @@ public class h
 
     public static byte[] j(byte[] rtkBuf, int length)
     {
+        var orig = Encoding.ASCII.GetString(rtkBuf);
+        var after = string.Empty;
+        var chr = ' ';
         //var array = Encoding.ASCII.GetBytes("0123456789ABCDEF");
         for (var i = 0; i < length / 2; i++)
         {
-            var b = rtkBuf[2 * i];
-            if (b is >= 48 and <= 57)
+            var curr_byte = rtkBuf[2 * i];
+            chr = (char)curr_byte;
+            switch (curr_byte)
             {
-                rtkBuf[i] = (byte)(b - 48 << 4);
-            }
-            else
-            {
-                if (b is < 65 or > 70)
+                // 0-9
+                case >= 48 and <= 57:
+                    var num_v = (byte)(curr_byte - 48 << 4);
+                    chr = (char)num_v;
+                    rtkBuf[i] = num_v;
+                    break;
+                default:
                 {
-                    for (i = 0; i < length; i++)
+                    // if not in A-F
+                    if (curr_byte is < 65 or > 70)
                     {
-                        rtkBuf[i] = 0;
+                        for (i = 0; i < length; i++) rtkBuf[i] = 0;
+                        return rtkBuf;
                     }
 
-                    return rtkBuf;
+                    var alpha_v = (byte)(curr_byte - 65 + 10 << 4);
+                    chr = (char)alpha_v;
+                    rtkBuf[i] = alpha_v;
+                    break;
                 }
-
-                rtkBuf[i] = (byte)(b - 65 + 10 << 4);
             }
 
-            b = rtkBuf[2 * i + 1];
-            if (b is >= 48 and <= 57)
+            curr_byte = rtkBuf[2 * i + 1];
+            chr = (char)curr_byte;
+
+            switch (curr_byte)
             {
-                rtkBuf[i] += (byte)(b - 48);
-                continue;
+                // 0-9
+                case >= 48 and <= 57:
+                    var num_val = (byte)(curr_byte - 48);
+                    chr = (char)num_val;
+                    rtkBuf[i] += num_val;
+                    continue;
+                // A-F
+                case >= 65 and <= 70:
+                    var alpha_val = (byte)(curr_byte - 65 + 10);
+                    chr = (char)alpha_val;
+                    rtkBuf[i] += alpha_val;
+                    continue;
             }
 
-            if (b is >= 65 and <= 70)
-            {
-                rtkBuf[i] += (byte)(b - 65 + 10);
-                continue;
-            }
-
-            for (i = 0; i < length; i++)
-            {
-                rtkBuf[i] = 0;
-            }
-
+            for (i = 0; i < length; i++) rtkBuf[i] = 0;
+            after = Encoding.ASCII.GetString(rtkBuf);
             return rtkBuf;
         }
 
+        after = Encoding.ASCII.GetString(rtkBuf);
         return rtkBuf;
     }
 
@@ -681,32 +683,33 @@ public class h
         if (rtkBuf == null)
             return INVALID_RTK;
 
-        var num = rtkBuf.Length - 1;
-        if (num < 128)
+        var rtk_len = rtkBuf.Length - 1;
+        if (rtk_len < 128)
             return INVALID_RTK;
 
         // ?? decode buffer
         rtkBuf = j(rtkBuf, 128);
         rtkBuf[64] = 0;
+        var s = Encoding.ASCII.GetString(rtkBuf);
         if (rtkBuf[0] == 0)
             return EMPTY_RTK;
 
         // split the 64 bytes array into 3 segments
-        byte[] buf40 = new byte[40];
-        byte[] buf9 = new byte[9];
-        byte[] buf16 = new byte[16];
+        var serial_from_license_40 = new byte[40];
+        var node_id_9 = new byte[9];
+        var key_from_license_16 = new byte[16];
         int index;
-        for (index = 0; index < 40; index++) buf40[index] = rtkBuf[index];
+        for (index = 0; index < 40; index++) serial_from_license_40[index] = rtkBuf[index];
 
-        for (index = 40; index < 49; index++) buf9[index - 40] = rtkBuf[index];
+        for (index = 40; index < 49; index++) node_id_9[index - 40] = rtkBuf[index];
 
-        for (index = 50; index < 62; index++) buf16[index - 50] = rtkBuf[index];
+        for (index = 50; index < 62; index++) key_from_license_16[index - 50] = rtkBuf[index];
 
-        int num3 = L(buf40, buf9, buf16, sigBuf);
-        if (num3 != 0)
-            return num3;
+        var result = L(serial_from_license_40, node_id_9, key_from_license_16, sigBuf);
+        if (result != 0)
+            return result;
 
-        switch ((char)B(rtkBuf[5]))
+        switch ((char)B_char_to_uppercase(rtkBuf[5]))
         {
             case 'A':
             case 'B':
@@ -732,7 +735,7 @@ public class h
             case 'F':
                 if (prodCode == 0)
                 {
-                    return num3;
+                    return result;
                 }
 
                 if (prodCode != 10 * (rtkBuf[6] - 48) + rtkBuf[7] - 48)
@@ -746,31 +749,28 @@ public class h
         }
     }
 
-    public static int k(byte[] P_0, char P_1)
+    public static int k(byte[] runtime_key, char char_check)
     {
-        byte b = B(P_0[5]);
+        var the_5th = runtime_key[5];
+        var b = B_char_to_uppercase(the_5th);
         if (b == 86)
-        {
             return 0;
-        }
 
-        if (B(P_0[3]) != P_1)
-        {
+        if (B_char_to_uppercase(runtime_key[3]) != char_check)
             return 21;
-        }
 
         return 0;
     }
 
     public static int M(byte[] P_0, char P_1)
     {
-        byte b = B(P_0[5]);
+        byte b = B_char_to_uppercase(P_0[5]);
         if (b == 86)
         {
             return 0;
         }
 
-        if (B(P_0[3]) != P_1)
+        if (B_char_to_uppercase(P_0[3]) != P_1)
         {
             return 21;
         }
@@ -780,8 +780,8 @@ public class h
 
     public static int i(byte[] rtkBytes, int buildNum)
     {
-        var the5thByte = B(rtkBytes[5]);
-        if (!f(the5thByte))
+        var the5thByte = B_char_to_uppercase(rtkBytes[5]);
+        if (!f_license_type_is_royalty_free_server(the5thByte))
         {
             return 0;
         }
@@ -797,8 +797,8 @@ public class h
 
     public static int a(byte[] P_0, int P_1)
     {
-        byte b = B(P_0[5]);
-        if (!f(b))
+        byte b = B_char_to_uppercase(P_0[5]);
+        if (!f_license_type_is_royalty_free_server(b))
         {
             return 0;
         }
@@ -816,7 +816,7 @@ public class h
     {
         P_0[P_0.Length - 1] = 0;
         R(P_0, 0);
-        if (i(P_0[5]))
+        if (i__license_type_is_trial(P_0[5]))
         {
             int num = 10 * (P_0[12] - 48) + (P_0[13] - 48);
             DateTime now = DateTime.Now;
@@ -834,7 +834,7 @@ public class h
             }
         }
 
-        if (p(P_0[5]))
+        if (p_license_type_is_server_cpu_bound(P_0[5]))
         {
             int num4 = ((P_0[6] <= 56) ? (P_0[6] - 48) : 0);
         }
@@ -846,7 +846,7 @@ public class h
     {
         P_0[P_0.Length - 1] = 0;
         R(P_0, 0);
-        if (i(P_0[5]))
+        if (i__license_type_is_trial(P_0[5]))
         {
             int num = 10 * (P_0[12] - 48) + (P_0[13] - 48);
             DateTime now = DateTime.Now;
@@ -875,7 +875,8 @@ public class h
      */
     public static int c(byte[] decodedFromLicenseFile)
     {
-        if (decodedFromLicenseFile[0] == 0 || !f(B(decodedFromLicenseFile[5])))
+        if (decodedFromLicenseFile[0] == 0 ||
+            !f_license_type_is_royalty_free_server(B_char_to_uppercase(decodedFromLicenseFile[5])))
         {
             return -1;
         }
@@ -893,25 +894,25 @@ public class h
 
 public sealed class M : h
 {
-    public static void n(int code, Type asmType, string? runTimeKey) =>
-        l(code, asmType, runTimeKey != null ? utf8StrToBytes(runTimeKey + "\0") : null);
+    public static void n(int product_code, Type asmType, string? runTimeKey) =>
+        l(product_code, asmType, runTimeKey != null ? utf8StrToBytes(runTimeKey + "\0") : null);
 
-    internal static void l(int code, Type? asmType, byte[]? rtkBytes)
+    internal static void l(int product_code, Type? asmType, byte[]? runtime_key)
     {
         var result = 18;
-        if (rtkBytes != null)
+        if (runtime_key != null)
         {
-            var array = new byte[17];
-            d(array);
-            result = T(rtkBytes, array, code);
-            if (result == 0) result = k(rtkBytes, 'J');
+            var signature_buf = new byte[17];
+            d_populate_signature(signature_buf);
+            result = T(runtime_key, signature_buf, product_code);
+            if (result == 0) result = k(runtime_key, 'J');
 
             if (result == 0)
             {
-                result = i(rtkBytes, 8949);
+                result = i(runtime_key, 8949);
                 if (result != 0)
                 {
-                    var build_num = ipw240x.h.c(rtkBytes);
+                    var build_num = ipw240x.h.c(runtime_key);
                     var code_id = (char)(65 + result);
                     var node_id = L();
                     var err_message = "IPWorks 2024";
@@ -924,7 +925,7 @@ public sealed class M : h
             }
         }
 
-        if (result != 0) Q(code, asmType, ref result);
+        if (result != 0) Q(product_code, asmType, ref result);
     }
 
     internal static string Q(int prodCode, Type? asmType, ref int transformResult)
@@ -1000,7 +1001,7 @@ public sealed class M : h
             return num;
         }
 
-        if (!y(outBuffer[5]))
+        if (!y_license_type_is_single_royalty_server(outBuffer[5]))
         {
             return num;
         }
@@ -1019,7 +1020,7 @@ public sealed class M : h
             default:
                 return num;
             case 0:
-                if (!y(outBuffer[5]))
+                if (!y_license_type_is_single_royalty_server(outBuffer[5]))
                 {
                     return 10;
                 }
@@ -1207,7 +1208,7 @@ public sealed class M : h
             return INVALIDE_LICENSE_TYPE;
         }
 
-        if (K(license_type_byte))
+        if (K_license_is_royalty_or_trial(license_type_byte))
         {
             node_id_buffer[0] = 42; // "*"
             node_id_buffer[1] = 0;
@@ -1336,7 +1337,7 @@ public sealed class M : h
             "This system contains a developer license for IPWorks 2024 which cannot be used on this operating system. See www.nsoftware.com for licensing options. [code: {0} nodeid: {1}]");
         if (!trialNag)
         {
-            if (i(outBuffer[5]))
+            if (i__license_type_is_trial(outBuffer[5]))
             {
                 return "EXPIRING TRIAL [" + w(outBuffer) + " DAYS LEFT]";
             }
@@ -1349,18 +1350,18 @@ public sealed class M : h
             return string.Empty;
         }
 
-        if (i(outBuffer[5]))
+        if (i__license_type_is_trial(outBuffer[5]))
         {
             return string.Empty;
         }
 
-        if (!o(outBuffer[5]))
+        if (!o_is_limited_license_type(outBuffer[5]))
         {
             return string.Empty;
         }
 
         byte[] seed_buffer = new byte[16];
-        d(seed_buffer);
+        d_populate_signature(seed_buffer);
         var dest_buffer = new byte[129];
         var serial_code_format = serialCode + "                                           \0";
         S(dest_buffer, sM.f(serial_code_format, null), seed_buffer);
@@ -1370,7 +1371,7 @@ public sealed class M : h
     /**
      * Initialize seed buffer (encoded)
      */
-    private static void n(byte[] buf, int encode)
+    private static void n_create_signature(byte[] buf, int encode)
     {
         int num = 0;
         buf[num++] = 70;
@@ -1389,16 +1390,10 @@ public sealed class M : h
         buf[num++] = 100;
         buf[num++] = 74;
         buf[num++] = 70;
-        if (encode != 0)
-        {
-            G(buf, 78, 65);
-        }
+        if (encode > 0) G(buf, 78, 65);
     }
 
-    private static void d(byte[] out_buf)
-    {
-        n(out_buf, 1);
-    }
+    private static void d_populate_signature(byte[] signateure) => n_create_signature(signateure, 1);
 }
 
 internal sealed class sM
