@@ -34,7 +34,7 @@ public class h
      * Check license type (FULL version)
      * A-G,M,P,S,T,V,X,Z is okay
      */
-    public static bool A(byte lic_typ)
+    public static bool A__license_type_is_valid(byte lic_typ)
     {
         return (char)lic_typ switch
         {
@@ -511,7 +511,7 @@ public class h
     /**
      * Get the machine name
      */
-    public static string L()
+    public static string L__get_machine_name()
     {
         var machine_name = "";
         try
@@ -679,7 +679,7 @@ public class h
 
     public static byte[] S(byte[] dest_buffer, byte[] serial_code_format, byte[] encoded_seed_buffer)
     {
-        var node_id_bytes = utf8StrToBytes(L());
+        var node_id_bytes = utf8StrToBytes(L__get_machine_name());
         return x(dest_buffer, serial_code_format, node_id_bytes, encoded_seed_buffer);
     }
 
@@ -729,7 +729,7 @@ public class h
                 return 0;
             case 'X':
             {
-                var node_id = utf8StrToBytes(L());
+                var node_id = utf8StrToBytes(L__get_machine_name());
                 for (index = 0; index < 8; index++)
                     if (node_id[index] != rtkBuf[40 + index])
                         return 20;
@@ -915,7 +915,7 @@ public sealed class M : h
                 {
                     var build_num = ipw240x.h.c(runtime_key);
                     var code_id = (char)(65 + result);
-                    var node_id = L();
+                    var node_id = L__get_machine_name();
                     var err_message = "IPWorks 2024";
                     if (asmType != null) err_message = string.Concat(err_message, " (", asmType, " component)");
 
@@ -943,7 +943,7 @@ public sealed class M : h
              some_kind_of_product_type.IndexOf("1DSK", StringComparison.Ordinal) == 6 ||
              (flag && some_kind_of_product_type.IndexOf("1SUB", StringComparison.Ordinal) == 6)) && D())
         {
-            throw new Exception(string.Format(exception_tpl, 'Z', L()));
+            throw new Exception(string.Format(exception_tpl, 'Z', L__get_machine_name()));
         }
     }
 
@@ -991,29 +991,23 @@ public sealed class M : h
     private static int t(string regKey, byte[] sigBytes, int prodCode, ref string serial, ref byte[] outBuffer,
         ref string serialFromLicenseFile)
     {
-        var num = c(regKey, sigBytes, ref serial, ref outBuffer, ref serialFromLicenseFile);
+        var num = c__read_license_from_file_or_registry(regKey, sigBytes, ref serial, ref outBuffer,
+            ref serialFromLicenseFile);
         if (num != 0)
-        {
             return num;
-        }
 
         if (outBuffer == null)
-        {
             return num;
-        }
 
         if (!y_license_type_is_single_royalty_server(outBuffer[5]))
-        {
             return num;
-        }
 
         if (prodCode == 10 * (outBuffer[6] - 48) + outBuffer[7] - 48)
-        {
             return 0;
-        }
 
         regKey = regKey + "\\" + prodCode;
-        num = c(regKey, sigBytes, ref serial, ref outBuffer, ref serialFromLicenseFile);
+        num = c__read_license_from_file_or_registry(regKey, sigBytes, ref serial, ref outBuffer,
+            ref serialFromLicenseFile);
         switch (num)
         {
             case 6:
@@ -1022,16 +1016,9 @@ public sealed class M : h
                 return num;
             case 0:
                 if (!y_license_type_is_single_royalty_server(outBuffer[5]))
-                {
                     return 10;
-                }
 
-                if (prodCode != 10 * (outBuffer[6] - 48) + outBuffer[7] - 48)
-                {
-                    return 11;
-                }
-
-                return 0;
+                return prodCode != 10 * (outBuffer[6] - 48) + outBuffer[7] - 48 ? 11 : 0;
         }
     }
 
@@ -1076,16 +1063,16 @@ public sealed class M : h
     public const int ERROR_LICENSE_PROCESSING = 8;
     public const int INVALIDE_LICENSE_TYPE = 10;
 
-    private static int c(string RunTimeLicenseCode, byte[] signatureBytes, ref string serial,
-        ref byte[] serialDecodedBytes, ref string valIPNJA)
+    private static int c__read_license_from_file_or_registry(
+        string RunTimeLicenseCode,
+        byte[] signatureBytes,
+        ref string serial,
+        ref byte[] serialDecodedBytes,
+        ref string valIPNJA)
     {
         byte[] key_bytes;
         Hashtable? hashtable = null;
-        byte[] node_id_buffer =
-        [
-            42, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-        ];
+        byte[] node_id = [42, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         int return_code;
         var licenseFilename = k();
         string? text2 = null;
@@ -1107,9 +1094,7 @@ public sealed class M : h
                 while (reader.ReadLine() is { } line)
                 {
                     if (!line.StartsWith("[HKEY_LOCAL_MACHINE\\", StringComparison.Ordinal))
-                    {
                         continue;
-                    }
 
                     var foundRuntimeContext = line.Equals("[HKEY_LOCAL_MACHINE\\" + RunTimeLicenseCode + "]");
                     while ((line = reader.ReadLine()) != null && line.Length != 0)
@@ -1119,15 +1104,9 @@ public sealed class M : h
                         {
                             var lbl = line.Substring(0, pos).Trim(trimChars);
                             var val = line.Substring(pos + 1).Trim(trimChars);
-                            if (foundRuntimeContext)
-                            {
-                                hashtable.Add(lbl, val);
-                            }
+                            if (foundRuntimeContext) hashtable.Add(lbl, val);
 
-                            if (lbl.Equals("IPNJA"))
-                            {
-                                valIPNJA = val;
-                            }
+                            if (lbl.Equals("IPNJA")) valIPNJA = val;
                         }
                     }
                 }
@@ -1138,19 +1117,15 @@ public sealed class M : h
             }
 
             if (!hashtable.ContainsKey("@"))
-            {
                 return NO_SERIAL_FOUND;
-            }
 
             serial = (string)hashtable["@"];
-            serialDecodedBytes = sM.f(serial + "\0", null);
+            serialDecodedBytes = sM.f___str_to_bytes(serial + "\0", null);
         }
         else
         {
             if (J || NN.H())
-            {
                 return NO_SERIAL_FOUND;
-            }
 
             RegistryKey registryKey = null;
             try
@@ -1173,18 +1148,14 @@ public sealed class M : h
             {
                 registryKey = Registry.LocalMachine.OpenSubKey(RunTimeLicenseCode);
                 if (registryKey == null)
-                {
                     return NO_SERIAL_FOUND;
-                }
 
                 object value = registryKey.GetValue("");
                 if (value == null)
-                {
                     return NO_SERIAL_FOUND;
-                }
 
                 serial = (string)value;
-                serialDecodedBytes = sM.f((string)value + "\0", null);
+                serialDecodedBytes = sM.f___str_to_bytes((string)value + "\0", null);
             }
             catch (SecurityException ex)
             {
@@ -1198,63 +1169,49 @@ public sealed class M : h
 
         R___decode_buffer(serialDecodedBytes, 0);
         if (serialDecodedBytes[0] == 0)
-        {
             return NULL_LICENSE_KEY;
-        }
 
         var license_type_byte = serialDecodedBytes[5];
 
-        if (!A(license_type_byte))
-        {
+        if (!A__license_type_is_valid(license_type_byte))
             return INVALIDE_LICENSE_TYPE;
-        }
 
         if (K_license_is_royalty_or_trial(license_type_byte))
         {
-            node_id_buffer[0] = 42; // "*"
-            node_id_buffer[1] = 0;
+            // all nodes
+            node_id[0] = 42; // "*"
+            node_id[1] = 0;
         }
         else
-        {
-            node_id_buffer = sM.f(L(), null);
-        }
+            node_id = sM.f___str_to_bytes(L__get_machine_name(), null);
 
         try
         {
-            var label = y__bytes_to_string(node_id_buffer, 0, 8);
-            if (label[0] == '*')
-            {
-                label = "*";
-            }
+            // (re)convert node_id to string
+            var node_id_string = y__bytes_to_string(node_id, 0, 8);
+            if (node_id_string[0] == '*') node_id_string = "*";
 
             object the_key = null;
             if (hashtable != null)
-            {
-                the_key = hashtable[label];
-            }
+                the_key = hashtable[node_id_string];
             else
             {
-                RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(RunTimeLicenseCode);
-                if (registryKey != null)
-                {
-                    the_key = registryKey.GetValue(label);
-                }
+                var registryKey = Registry.LocalMachine.OpenSubKey(RunTimeLicenseCode);
+                if (registryKey != null) the_key = registryKey.GetValue(node_id_string);
             }
 
             if (the_key == null)
-            {
                 return KEY_NOT_FOUND;
-            }
 
-            key_bytes = sM.f((string)the_key + "\0", null);
+            key_bytes = sM.f___str_to_bytes((string)the_key + "\0", null);
         }
         catch (Exception)
         {
             return ERROR_LICENSE_PROCESSING;
         }
 
-        return_code = node_id_buffer[0] != 42
-            ? L(serialDecodedBytes, node_id_buffer, key_bytes, signatureBytes)
+        return_code = node_id[0] != 42
+            ? L(serialDecodedBytes, node_id, key_bytes, signatureBytes)
             : L(serialDecodedBytes, null, key_bytes, signatureBytes);
         if (return_code == 0)
         {
@@ -1303,7 +1260,7 @@ public sealed class M : h
         if (error_code != 0)
         {
             var code = (char)(65 + error_code);
-            var node_id = L();
+            var node_id = L__get_machine_name();
             switch (error_code)
             {
                 case LICENSE_NOT_ACTIVATED:
@@ -1365,7 +1322,7 @@ public sealed class M : h
         d_populate_signature(seed_buffer);
         var dest_buffer = new byte[129];
         var serial_code_format = serialCode + "                                           \0";
-        S(dest_buffer, sM.f(serial_code_format, null), seed_buffer);
+        S(dest_buffer, sM.f___str_to_bytes(serial_code_format, null), seed_buffer);
         return y__bytes_to_string(dest_buffer, 0, 128);
     }
 
@@ -1399,12 +1356,12 @@ public sealed class M : h
 
 internal sealed class sM
 {
-    public static byte[] f(string serial, string? encoding)
+    public static byte[] f___str_to_bytes(string serial, string? encoding)
     {
         return saE.aI(serial, encoding);
     }
 
-    public static string V(byte[] serial, string? encoding)
+    public static string V__bytest_to_str(byte[] serial, string? encoding)
     {
         return saE.aM(serial, encoding);
     }
