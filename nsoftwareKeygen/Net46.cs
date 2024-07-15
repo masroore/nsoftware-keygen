@@ -401,10 +401,12 @@ public class h
             key_buffer[i] = key_from_license_file[i];
 
         key_buffer[i] = 0;
+        var src_s = y__bytes_to_string(key_buffer, 0, i);
         R___decode_buffer(key_buffer, 0);
         var generated_key = w__generate_key(serial_from_license_file, node_id_buffer, signature_bytes);
         var num = 1;
         var key_length = key_buffer[6] == 0 ? 6 : 12; // 6 or 12 chars key
+        var gen_s = y__bytes_to_string(generated_key, 0, key_length);
         for (i = 0; i < key_length; i++)
         {
             var src_byte = key_buffer[i];
@@ -813,17 +815,17 @@ public class h
         return 0;
     }
 
-    public static int _xh(byte[] P_0)
+    public static int _xh(byte[] buf)
     {
-        P_0[P_0.Length - 1] = 0;
-        R___decode_buffer(P_0, 0);
-        if (i__license_type_is_trial(P_0[5]))
+        buf[buf.Length - 1] = 0;
+        R___decode_buffer(buf, 0);
+        if (i__license_type_is_trial(buf[5]))
         {
-            int num = 10 * (P_0[12] - 48) + (P_0[13] - 48);
+            var num = 10 * (buf[12] - 48) + (buf[13] - 48);
             DateTime now = DateTime.Now;
             int num2 = 365 * (now.Year - 2000) + 30 * now.Month + now.Day;
-            int num3 = 365 * (10 * (P_0[10] - 48) + (P_0[11] - 48)) + 30 * (10 * (P_0[6] - 48) + (P_0[7] - 48)) +
-                       (10 * (P_0[8] - 48) + (P_0[9] - 48));
+            int num3 = 365 * (10 * (buf[10] - 48) + (buf[11] - 48)) + 30 * (10 * (buf[6] - 48) + (buf[7] - 48)) +
+                       (10 * (buf[8] - 48) + (buf[9] - 48));
             if (num2 > num3 + num)
             {
                 return 9;
@@ -835,9 +837,9 @@ public class h
             }
         }
 
-        if (p_license_type_is_server_cpu_bound(P_0[5]))
+        if (p_license_type_is_server_cpu_bound(buf[5]))
         {
-            int num4 = ((P_0[6] <= 56) ? (P_0[6] - 48) : 0);
+            int num4 = ((buf[6] <= 56) ? (buf[6] - 48) : 0);
         }
 
         return 0;
@@ -991,29 +993,29 @@ public sealed class M : h
     private static int t(string regKey, byte[] sigBytes, int prodCode, ref string serial, ref byte[] outBuffer,
         ref string serialFromLicenseFile)
     {
-        var num = c__read_license_from_file_or_registry(regKey, sigBytes, ref serial, ref outBuffer,
+        var result = c__read_license_from_file_or_registry(regKey, sigBytes, ref serial, ref outBuffer,
             ref serialFromLicenseFile);
-        if (num != 0)
-            return num;
+        if (result != 0)
+            return result;
 
         if (outBuffer == null)
-            return num;
+            return result;
 
         if (!y_license_type_is_single_royalty_server(outBuffer[5]))
-            return num;
+            return result;
 
         if (prodCode == 10 * (outBuffer[6] - 48) + outBuffer[7] - 48)
             return 0;
 
         regKey = regKey + "\\" + prodCode;
-        num = c__read_license_from_file_or_registry(regKey, sigBytes, ref serial, ref outBuffer,
+        result = c__read_license_from_file_or_registry(regKey, sigBytes, ref serial, ref outBuffer,
             ref serialFromLicenseFile);
-        switch (num)
+        switch (result)
         {
             case 6:
                 return 11;
             default:
-                return num;
+                return result;
             case 0:
                 if (!y_license_type_is_single_royalty_server(outBuffer[5]))
                     return 10;
@@ -1080,10 +1082,7 @@ public sealed class M : h
         {
             hashtable = new Hashtable();
             string? licenseFileContent = null;
-            if (licenseFileContent == null && text2 != null)
-            {
-                licenseFileContent = text2;
-            }
+            if (licenseFileContent == null && text2 != null) licenseFileContent = text2;
 
             licenseFileContent ??= File.ReadAllText(licenseFilename);
 
@@ -1210,9 +1209,10 @@ public sealed class M : h
             return ERROR_LICENSE_PROCESSING;
         }
 
-        return_code = node_id[0] != 42
+        return_code = node_id[0] != 42 /* is not '*" */
             ? L(serialDecodedBytes, node_id, key_bytes, signatureBytes)
             : L(serialDecodedBytes, null, key_bytes, signatureBytes);
+
         if (return_code == 0)
         {
             return_code = M(serialDecodedBytes, 'J');
