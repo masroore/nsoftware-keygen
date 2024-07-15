@@ -239,11 +239,9 @@ public class h
 
         if (theByte == 81) theByte = 48;
 
-        for (sbyte b = 0; b < 32; b++) {
-            if (theByte == O[b]) {
+        for (sbyte b = 0; b < 32; b++)
+            if (theByte == O[b])
                 return b;
-            }
-        }
 
         return -1;
     }
@@ -314,12 +312,11 @@ public class h
     protected internal static void G(byte[] buf, byte b78, byte b65)
     {
         var before = buf;
-        var s_before = Encoding.Default.GetString(buf);
+        var s_before = Encoding.ASCII.GetString(buf);
         for (var i = 0; i < 16; i++) {
             buf[i] = (byte)(buf[i] + (b78 - 48) + (b65 - 48));
         }
 
-        var after = buf;
         var s_after = Encoding.Default.GetString(buf);
     }
 
@@ -360,11 +357,16 @@ public class h
         return resultBuffer;
     }
 
-    internal static byte[] w(byte[] bufFirst40, byte[] bufMiddle9, byte[] signatureBuf)
+    /**
+     * Get 12 byte array - possibly the key
+     */
+    internal static byte[] w(byte[] serial_code_40, byte[] node_id_9, byte[] signatureBuf)
     {
-        var array = P(bufFirst40, bufMiddle9, signatureBuf);
+        var array = P(serial_code_40, node_id_9, signatureBuf);
         array = u(array, 8);
+        var s1 = Encoding.Default.GetString(array);
         array[12] = 0;
+        var s2 = Encoding.Default.GetString(array);
         return array;
     }
 
@@ -378,24 +380,26 @@ public class h
 
         key_bytes_cleaned[i] = 0;
         R(key_bytes_cleaned, 0);
-        byte[] array2 = w(serialDecodedBytes_40, node_id_buffer, signature_bytes);
-        int num = 1;
-        for (i = 0; i < (key_bytes_cleaned[6] == 0 ? 6 : 12); i++) {
-            if (key_bytes_cleaned[i] != 0) {
-                num = 0;
-            }
+        var array2 = w(serialDecodedBytes_40, node_id_buffer, signature_bytes);
+        var num = 1;
+        var the_6th_elem = key_bytes_cleaned[6];
+        var lerngth = the_6th_elem == 0 ? 6 : 12;
+        for (i = 0; i < lerngth; i++) {
+            var curr_byte = key_bytes_cleaned[i];
+            var c = (char)curr_byte;
 
-            if (key_bytes_cleaned[i] == 0) {
+            if (curr_byte != 0) num = 0;
+
+            if (curr_byte == 0)
                 return 1;
-            }
 
-            if (key_bytes_cleaned[i] != array2[i]) {
+            if (curr_byte != array2[i])
                 return 2;
-            }
         }
 
         if (key_bytes_cleaned[12] != 0)
             return 3;
+
         return num != 0 ? 4 : 0;
     }
 
@@ -488,19 +492,22 @@ public class h
         return l(machine_name);
     }
 
-    public static string l(string machine_name)
+    /**
+     * Get the serial key from machine name
+     */
+    public static string l(string node_name)
     {
-        var array = new byte[100];
-        var machine_name_utf_bytes = utf8StrToBytes(machine_name);
-        y(machine_name_utf_bytes, 0, array, 1, machine_name_utf_bytes.Length);
-        array[0] = 65;
-        byte[] seed =
+        var serial_code_maybe = new byte[100];
+        var node_id_bytes = utf8StrToBytes(node_name);
+        y(node_id_bytes, 0, serial_code_maybe, 1, node_id_bytes.Length);
+        serial_code_maybe[0] = 65; // "A"
+        byte[] seed_bytes =
         [
             69, 110, 105, 107, 97, 109, 69, 114, 117, 104,
             100, 121, 114, 116, 104, 83
         ];
-        var array4 = w(array, [], seed);
-        return y(array4, 0, 8);
+        var the_key_perhaps = w(serial_code_maybe, [], seed_bytes);
+        return y(the_key_perhaps, 0, 8);
     }
 
     public static byte[] _h(byte[] P_0, int P_1)
@@ -867,14 +874,17 @@ public sealed class M : h
         //return RtlLib.IsServerOS();
     }
 
-    private static void x(byte[] buf)
-    {
-        v(buf, 1);
-    }
+    /**
+     * Populate signature buffer
+     */
+    private static void x(byte[] buf) => v(buf, 1);
 
+    /**
+     * Populate signature buffer and encoded if required
+     */
     private static void v(byte[] buf, int decode)
     {
-        int num = 0;
+        var num = 0;
         buf[num++] = 51;
         buf[num++] = 79;
         buf[num++] = 90;
@@ -890,10 +900,9 @@ public sealed class M : h
         buf[num++] = 51;
         buf[num++] = 121;
         buf[num++] = 66;
-        buf[num++] = 101;
-        if (decode != 0) {
-            G(buf, 78, 65);
-        }
+        buf[num] = 101;
+
+        if (decode != 0) G(buf, 78, 65);
     }
 
     //t("SOFTWARE\\nsoftware\\RT\\IPNJA", signature_internal, prodCode, ref outMessage, ref array2, ref text2);
@@ -968,7 +977,9 @@ public sealed class M : h
         return null;
     }
 
+    public const int NO_SERIAL_FOUND = 6;
     public const int NULL_LICENSE_KEY = 7;
+    public const int ERROR_LICENSE_PROCESSING = 8;
     public const int INVALIDE_LICENSE_TYPE = 10;
 
     private static int c(string RunTimeLicenseCode, byte[] signatureBytes, ref string serial, ref byte[] serialDecodedBytes, ref string valIPNJA)
@@ -980,7 +991,7 @@ public sealed class M : h
             42, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         ];
-        var num = 0;
+        int return_code;
         var licenseFilename = k();
         string? text2 = null;
         if (licenseFilename != null || text2 != null) {
@@ -1022,7 +1033,7 @@ public sealed class M : h
             }
 
             if (!hashtable.ContainsKey("@")) {
-                return 6;
+                return NO_SERIAL_FOUND;
             }
 
             serial = (string)hashtable["@"];
@@ -1030,7 +1041,7 @@ public sealed class M : h
         }
         else {
             if (J || NN.H()) {
-                return 6;
+                return NO_SERIAL_FOUND;
             }
 
             RegistryKey registryKey = null;
@@ -1048,12 +1059,12 @@ public sealed class M : h
             try {
                 registryKey = Registry.LocalMachine.OpenSubKey(RunTimeLicenseCode);
                 if (registryKey == null) {
-                    return 6;
+                    return NO_SERIAL_FOUND;
                 }
 
                 object value = registryKey.GetValue("");
                 if (value == null) {
-                    return 6;
+                    return NO_SERIAL_FOUND;
                 }
 
                 serial = (string)value;
@@ -1110,27 +1121,26 @@ public sealed class M : h
             key_bytes = sM.f((string)the_key + "\0", null);
         }
         catch (Exception) {
-            return 8;
+            return ERROR_LICENSE_PROCESSING;
         }
 
-        num = node_id_buffer[0] != 42 ? L(serialDecodedBytes, node_id_buffer, key_bytes, signatureBytes) : L(serialDecodedBytes, null, key_bytes, signatureBytes);
-        if (num == 0) {
-            num = M(serialDecodedBytes, 'J');
-            if (num != 0) {
-                return num;
-            }
+        return_code = node_id_buffer[0] != 42
+            ? L(serialDecodedBytes, node_id_buffer, key_bytes, signatureBytes)
+            : L(serialDecodedBytes, null, key_bytes, signatureBytes);
+        if (return_code == 0) {
+            return_code = M(serialDecodedBytes, 'J');
+            if (return_code != 0)
+                return return_code;
         }
 
-        if (num == 0) {
-            num = a(serialDecodedBytes, 8949);
-            if (num != 0) {
-                return num;
-            }
+        if (return_code == 0) {
+            return_code = a(serialDecodedBytes, 8949);
+            if (return_code != 0)
+                return return_code;
         }
 
-        if (num != 0) {
-            return 8;
-        }
+        if (return_code != 0)
+            return ERROR_LICENSE_PROCESSING;
 
         return _xh(serialDecodedBytes);
     }
