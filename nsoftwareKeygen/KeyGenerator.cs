@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
 using ipw240x;
 using Microsoft.Win32;
 
@@ -82,7 +83,7 @@ public class KeyGenerator
         return Encoding.ASCII.GetString(productBytes);
     }
 
-    public static void WriteLicenseFile(ProductType productType, ProductKey key)
+    public static void WriteLicenseFile(ProductType productType, ProductKey key, Assembly assembly)
     {
         void writeParam(StreamWriter sw, string label, string value, bool noQuotes = false)
         {
@@ -95,14 +96,31 @@ public class KeyGenerator
 
         //var productCode = h.PRODUCT_NAMES[productType];
         var productCode = ProductCodes.GetCode(type: productType);
-        var filePath = productCode + ".lic";
-        using var fs = File.OpenWrite(filePath);
-        using var writer = new StreamWriter(fs);
-        writer.WriteLine($@"[HKEY_LOCAL_MACHINE\SOFTWARE\nsoftware\RT\{productCode}]");
-        writeParam(writer, "@", key.Serial, true);
-        writeParam(writer, "*", key.Key);
-        //writeParam(writer, key.Node, key.Key);
-        writeParam(writer, "RTK", key.RuntimeKey);
+        var filenames = new[]
+        {
+            productCode,
+            assembly.GetName().Name
+        };
+
+        var registryKeys = new[]
+        {
+            "nsoftware",
+            @"Wow6432Node\nsoftware",
+        };
+
+        foreach (var fileName in filenames) {
+            using var fs = File.OpenWrite(fileName + ".lic");
+            using var writer = new StreamWriter(fs);
+            writer.WriteLine("Windows Registry Editor Version 5.00\n");
+            foreach (var registryKey in registryKeys) {
+                writer.WriteLine($@"[HKEY_LOCAL_MACHINE\SOFTWARE\{registryKey}\RT\{productCode}]");
+                writeParam(writer, "@", key.Serial, true);
+                writeParam(writer, "*", key.Key);
+                //writeParam(writer, key.Node, key.Key);
+                writeParam(writer, "RTK", key.RuntimeKey);
+                writer.WriteLine("");
+            }
+        }
     }
 
     public static void InitProductSignatures(ProductType type) => ProductMap[type] = ProductSignatures.GetSignature(type);

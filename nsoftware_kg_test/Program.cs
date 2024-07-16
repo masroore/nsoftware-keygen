@@ -5,11 +5,9 @@ using nsoftware.CloudIdentity;
 using nsoftware.CloudKeys;
 using nsoftware.CloudMail;
 using nsoftware.CloudStorage;
-using nsoftware.InPay;
 using nsoftware.IPWorks;
 using nsoftware.IPWorks3DS;
 using nsoftware.IPWorksAuth;
-using nsoftware.IPWorksBLE;
 using nsoftware.IPWorksDTLS;
 using nsoftware.IPWorksEDI;
 using nsoftware.IPWorksEDITranslator;
@@ -27,13 +25,18 @@ using nsoftware.IPWorksZip;
 using nsoftware.SecureBlackbox;
 using nsoftwareKeygen;
 using static System.Console;
+#if NET46_OR_GREATER
+using nsoftware.InPay;
+using nsoftware.IPWorksBLE;
+#endif
 
 
 void LoadAndTestComponents(Assembly assembly, ProductType type)
 {
+    //WriteLine("\t> " + assembly.FullName);
     KeyGenerator.InitProductSignatures(type);
     var key = KeyGenerator.Generate(type);
-    KeyGenerator.WriteLicenseFile(type, key);
+    KeyGenerator.WriteLicenseFile(type, key, assembly);
 
     var components = FindDerivedTypes(assembly, typeof(Component)).ToList();
     foreach (var ct in components) {
@@ -77,13 +80,12 @@ LoadAndTestComponents(typeof(IPWorks).Assembly, ProductType.IPWorks);
 LoadAndTestComponents(typeof(CloudStorage).Assembly, ProductType.CloudStorage);
 LoadAndTestComponents(typeof(CloudMail).Assembly, ProductType.CloudMail);
 LoadAndTestComponents(typeof(CloudKeys).Assembly, ProductType.CloudKeys);
-LoadAndTestComponents(typeof(SecureBlackbox).Assembly, ProductType.SecureBlackbox);
+LoadAndTestComponents(typeof(SecureBlackboxArchiveReaderException).Assembly, ProductType.SecureBlackbox);
 LoadAndTestComponents(typeof(IPWorksZip).Assembly, ProductType.IPWorksZip);
 LoadAndTestComponents(typeof(IPWorksSSL).Assembly, ProductType.IPWorksSSL);
 LoadAndTestComponents(typeof(IPWorksSFTP).Assembly, ProductType.IPWorksSFTP);
 LoadAndTestComponents(typeof(IPWorksSNMP).Assembly, ProductType.IPWorksSNMP);
 LoadAndTestComponents(typeof(IPWorks3DS).Assembly, ProductType.IPWorks3DS);
-LoadAndTestComponents(typeof(IPWorksBLE).Assembly, ProductType.IPWorksBLE);
 LoadAndTestComponents(typeof(IPWorksAuth).Assembly, ProductType.IPWorksAuth);
 LoadAndTestComponents(typeof(IPWorksEDI).Assembly, ProductType.IPWorksEDI);
 LoadAndTestComponents(typeof(IPWorksEDITranslator).Assembly, ProductType.IPWorksEDITranslator);
@@ -91,11 +93,15 @@ LoadAndTestComponents(typeof(IPWorksDTLS).Assembly, ProductType.IPWorksDTLS);
 LoadAndTestComponents(typeof(IPWorksIPC).Assembly, ProductType.IPWorksIPC);
 LoadAndTestComponents(typeof(IPWorksMQ).Assembly, ProductType.IPWorksMQ);
 LoadAndTestComponents(typeof(IPWorksOpenPGP).Assembly, ProductType.IPWorksOpenPGP);
-LoadAndTestComponents(typeof(InPay).Assembly, ProductType.InPay);
 LoadAndTestComponents(typeof(IPWorksIoT).Assembly, ProductType.IPWorksIOT);
 LoadAndTestComponents(typeof(IPWorksSMIME).Assembly, ProductType.IPWorksSMIME);
 LoadAndTestComponents(typeof(IPWorksEncrypt).Assembly, ProductType.IPWorksEncrypt);
 LoadAndTestComponents(typeof(IPWorksSSH).Assembly, ProductType.IPWorksSSH);
+
+#if NET46_OR_GREATER
+LoadAndTestComponents(typeof(IPWorksBLE).Assembly, ProductType.IPWorksBLE);
+LoadAndTestComponents(typeof(InPay).Assembly, ProductType.InPay);
+#endif
 
 /*
 // beta
