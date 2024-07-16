@@ -27,6 +27,7 @@ public static class ProductCodes
         { ProductType.IPWorksAuth, "IA" },
         { ProductType.CloudBackup, "EB" },
         { ProductType.InPay, "BP" },
+        { ProductType.IPWorksSMIME, "IM" },
     };
 
     public static string YearToString(ushort year) => ((char)(year - 1950)).ToString();

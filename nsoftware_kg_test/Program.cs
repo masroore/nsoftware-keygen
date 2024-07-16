@@ -13,12 +13,15 @@ using nsoftware.IPWorksBLE;
 using nsoftware.IPWorksDTLS;
 using nsoftware.IPWorksEDI;
 using nsoftware.IPWorksEDITranslator;
+using nsoftware.IPWorksEncrypt;
 using nsoftware.IPWorksIoT;
 using nsoftware.IPWorksIPC;
 using nsoftware.IPWorksMQ;
 using nsoftware.IPWorksOpenPGP;
 using nsoftware.IPWorksSFTP;
+using nsoftware.IPWorksSMIME;
 using nsoftware.IPWorksSNMP;
+using nsoftware.IPWorksSSH;
 using nsoftware.IPWorksSSL;
 using nsoftware.IPWorksZip;
 using nsoftware.SecureBlackbox;
@@ -69,7 +72,6 @@ void test_component<T>(ProductKey key) where T : new() // T : Type
 
 var asms = AppDomain.CurrentDomain.GetAssemblies().ToList();
 
-
 LoadAndTestComponents(typeof(IPWorks).Assembly, ProductType.IPWorks);
 LoadAndTestComponents(typeof(CloudStorage).Assembly, ProductType.CloudStorage);
 LoadAndTestComponents(typeof(CloudMail).Assembly, ProductType.CloudMail);
@@ -85,19 +87,23 @@ LoadAndTestComponents(typeof(IPWorksAuth).Assembly, ProductType.IPWorksAuth);
 LoadAndTestComponents(typeof(IPWorksEDI).Assembly, ProductType.IPWorksEDI);
 LoadAndTestComponents(typeof(IPWorksEDITranslator).Assembly, ProductType.IPWorksEDITranslator);
 LoadAndTestComponents(typeof(IPWorksDTLS).Assembly, ProductType.IPWorksDTLS);
-
-LoadAndTestComponents(typeof(InPay).Assembly, ProductType.InPay);
 LoadAndTestComponents(typeof(IPWorksIPC).Assembly, ProductType.IPWorksIPC);
 LoadAndTestComponents(typeof(IPWorksMQ).Assembly, ProductType.IPWorksMQ);
 LoadAndTestComponents(typeof(IPWorksOpenPGP).Assembly, ProductType.IPWorksOpenPGP);
+LoadAndTestComponents(typeof(InPay).Assembly, ProductType.InPay);
 LoadAndTestComponents(typeof(IPWorksIoT).Assembly, ProductType.IPWorksIOT);
+LoadAndTestComponents(typeof(IPWorksSMIME).Assembly, ProductType.IPWorksSMIME);
+LoadAndTestComponents(typeof(IPWorksEncrypt).Assembly, ProductType.IPWorksEncrypt);
+LoadAndTestComponents(typeof(IPWorksSSH).Assembly, ProductType.IPWorksSSH);
 
+/*
 // beta
 LoadAndTestComponents(typeof(CloudBackup).Assembly, ProductType.CloudBackup);
 LoadAndTestComponents(typeof(CloudIdentity).Assembly, ProductType.CloudIdentity);
+*/
 
-foreach (var kvp in ProductSignatures.SEED_BANK)
-    WriteLine(kvp.Key + " = " + kvp.Value);
+foreach (var kvp in ProductSignatures.SIGNATURES_DECRYPTED)
+    WriteLine("{" + $@"ProductType.{kvp.Key}, ""{kvp.Value}""" + "},");
 
 /*
 M.ProductType = ProductType.IPWorks;
