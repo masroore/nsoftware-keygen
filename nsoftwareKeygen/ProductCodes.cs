@@ -2,7 +2,7 @@
 
 public static class ProductCodes
 {
-    private static Dictionary<ProductType, string> PRODUCT_PREFIX_MAP = new()
+    private static readonly Dictionary<ProductType, string> PRODUCT_PREFIX_MAP = new()
     {
         { ProductType.IPWorks, "IP" },
         { ProductType.SecureBlackbox, "SB" },
@@ -27,7 +27,7 @@ public static class ProductCodes
         { ProductType.IPWorksAuth, "IA" },
         { ProductType.CloudBackup, "EB" },
         { ProductType.InPay, "BP" },
-        { ProductType.IPWorksSMIME, "IM" },
+        { ProductType.IPWorksSMIME, "IM" }
     };
 
     public static string YearToString(ushort year) => ((char)(year - 1950)).ToString();

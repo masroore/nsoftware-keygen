@@ -6,7 +6,7 @@ public static class ProductSignatures
 {
     public static Dictionary<ProductType, string> SIGNATURES_DECRYPTED = new();
 
-    private static Dictionary<ProductType, string> SIGNATURES = new()
+    private static readonly Dictionary<ProductType, string> SIGNATURES = new()
     {
         { ProductType.IPWorks, "FiNAID1tuTqtudJF" },
         { ProductType.CloudStorage, "7xuG03vZuusunKXn" },
@@ -32,7 +32,7 @@ public static class ProductSignatures
         { ProductType.IPWorksEncrypt, "Xx1IDKMrmkhuYotg" },
         { ProductType.IPWorksSSH, "1FiPloDeYknbzbMc" },
         { ProductType.CloudBackup, "" },
-        { ProductType.CloudIdentity, "" },
+        { ProductType.CloudIdentity, "" }
     };
 
 

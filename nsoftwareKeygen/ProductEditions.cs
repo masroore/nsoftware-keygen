@@ -10,5 +10,5 @@ public enum ProductEditions : byte
     Java = (byte)'J',
     JavaScript = (byte)'J',
     Php = (byte)'P',
-    Python = (byte)'T',
+    Python = (byte)'T'
 }

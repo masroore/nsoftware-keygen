@@ -89,7 +89,7 @@ public class KeyGenerator
             sw.WriteLine(@$"{label}={value}");
         }
 
-        var productCode = M.PRODUCT_NAMES[productType];
+        var productCode = h.PRODUCT_NAMES[productType];
         var filePath = productCode + ".lic";
         using var fs = File.OpenWrite(filePath);
         using var writer = new StreamWriter(fs);

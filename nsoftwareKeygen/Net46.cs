@@ -9,12 +9,6 @@ namespace ipw240x;
 
 public class h
 {
-    /**
-     * alpha numeric table: 0-9, A-Z
-     */
-    internal static byte[] O__ALPHA_NUM_TBL = Encoding.ASCII.GetBytes("0123456789ABCDEFGHJKMNPRSTUVWXYZ");
-
-
     public const string EDITION_JAVA = "J";
     public const string EDITION_DOTNET = "N";
 
@@ -24,6 +18,26 @@ public class h
     public const char YEAR_CODE_2022 = (char)(2022 - 1950);
     public const char YEAR_CODE_2024 = (char)(2024 - 1950);
     public const char YEAR_CODE_2026 = (char)(2026 - 1950);
+
+    public const char ROYALTY_FREE_VERSION_INDEPENDENT = 'V';
+
+    public const int KEY_VALID = 0;
+    public const int KEY_EMPTY = 1;
+    public const int KEY_INVALID = 2;
+    public const int KEY_INVALID_LENGTH = 3;
+    public const int KEY_ERROR = 4;
+
+    private const int INVALID_RTK = 17;
+    private const int EMPTY_RTK = 18;
+
+    public const int TRIAL_EXPIRED = 9;
+    public const int TRIAL_IS_ACTIVE = 12;
+    public const int TRIAL_NONE = 0;
+
+    /**
+     * alpha numeric table: 0-9, A-Z
+     */
+    internal static byte[] O__ALPHA_NUM_TBL = Encoding.ASCII.GetBytes("0123456789ABCDEFGHJKMNPRSTUVWXYZ");
 
     public static string PRODUCT_SUFFIX_2020 = EDITION_DOTNET + YEAR_CODE_2020 + SUFFIX;
     public static string PRODUCT_SUFFIX_2022 = EDITION_DOTNET + YEAR_CODE_2022 + SUFFIX;
@@ -55,7 +69,7 @@ public class h
         { ProductType.IPWorksAuth, "IA" + PRODUCT_SUFFIX_2024 },
         { ProductType.CloudBackup, "EB" + PRODUCT_SUFFIX_2024 },
         { ProductType.InPay, "BP" + PRODUCT_SUFFIX_2020 },
-        { ProductType.IPWorksSMIME, "IM" + PRODUCT_SUFFIX_2022 },
+        { ProductType.IPWorksSMIME, "IM" + PRODUCT_SUFFIX_2022 }
     };
 
     /**
@@ -97,11 +111,9 @@ public class h
             ROYALTY_FREE_VERSION_INDEPENDENT => true,
             'X'                              => true,
             'Z'                              => true,
-            _                                => false,
+            _                                => false
         };
     }
-
-    public const char ROYALTY_FREE_VERSION_INDEPENDENT = 'V';
 
     /**
      * Get license type description
@@ -124,7 +136,7 @@ public class h
             'T'                              => "Single-Server, Single Control",
             'P'                              => "Single-Server, Processor Bound, All Controls",
             'M'                              => "Metered",
-            _                                => string.Concat((char)lic_typ),
+            _                                => string.Concat((char)lic_typ)
         };
     }
 
@@ -157,7 +169,7 @@ public class h
             'F' => true,
             'V' => true,
             'Z' => true,
-            _   => false,
+            _   => false
         };
 
     /**
@@ -172,11 +184,11 @@ public class h
 
     internal static void l(uint[] P_0, uint[] P_1)
     {
-        uint num = P_0[0];
-        uint num2 = P_0[1];
-        uint num3 = 0u;
-        uint num4 = 2654435769u;
-        uint num5 = 32u;
+        var num = P_0[0];
+        var num2 = P_0[1];
+        var num3 = 0u;
+        var num4 = 2654435769u;
+        var num5 = 32u;
         while (num5-- != 0) {
             num3 += num4;
             num += ((num2 << 4) + P_1[0]) ^ (num2 + num3) ^ ((num2 >> 5) + P_1[1]);
@@ -189,7 +201,7 @@ public class h
 
     internal static uint b(byte[] buf, int offset)
     {
-        uint num = buf[offset + 3] & 0xFFu;
+        var num = buf[offset + 3] & 0xFFu;
         num = num * 256 + (uint)(buf[offset + 2] & 0xFF);
         num = num * 256 + (uint)(buf[offset + 1] & 0xFF);
         return num * 256 + (uint)(buf[offset] & 0xFF);
@@ -205,11 +217,11 @@ public class h
 
     internal static void b(byte[] buf, int offset, byte[] buf2)
     {
-        uint[] array = new uint[2];
-        uint[] array2 = new uint[4];
-        for (int i = 0; i < 2; i++) array[i] = b(buf, offset + i * 4);
+        var array = new uint[2];
+        var array2 = new uint[4];
+        for (var i = 0; i < 2; i++) array[i] = b(buf, offset + i * 4);
 
-        for (int j = 0; j < 4; j++) array2[j] = b(buf2, offset + j * 4);
+        for (var j = 0; j < 4; j++) array2[j] = b(buf2, offset + j * 4);
 
         l(array, array2);
         for (var k = 0; k < 2; k++) a(array[k], buf, k * 4);
@@ -218,16 +230,12 @@ public class h
     internal static void P(byte[] buf, int endOffset)
     {
         for (var index = endOffset - 1; index >= 0; index--) {
-            if ((buf[index / 8] & (1 << index % 8)) != 0) {
-                buf[index / 5] |= (byte)(1 << index % 5);
-            }
-            else {
-                buf[index / 5] &= (byte)(~(1 << index % 5));
-            }
+            if ((buf[index / 8] & (1 << (index % 8))) != 0)
+                buf[index / 5] |= (byte)(1 << (index % 5));
+            else
+                buf[index / 5] &= (byte)~(1 << (index % 5));
 
-            if (index % 5 == 0) {
-                buf[index / 5] &= 31;
-            }
+            if (index % 5 == 0) buf[index / 5] &= 31;
         }
     }
 
@@ -309,13 +317,11 @@ public class h
 
     internal static void d(byte[] buffer, int offset, int length)
     {
-        ulong num = (ulong)DateTime.Now.Ticks;
+        var num = (ulong)DateTime.Now.Ticks;
         for (var i = 0; i < length; i++) {
-            if (i > 0 && i % 4 == 0) {
-                num = num * 25214903917L + 11;
-            }
+            if (i > 0 && i % 4 == 0) num = num * 25214903917L + 11;
 
-            buffer[offset + i] = (byte)(65 + ((byte)(num >> i % 4 * 8) & 0x7F) % 26);
+            buffer[offset + i] = (byte)(65 + ((byte)(num >> (i % 4 * 8)) & 0x7F) % 26);
         }
     }
 
@@ -364,9 +370,7 @@ public class h
     {
         var before = buf;
         var s_before = Encoding.ASCII.GetString(buf);
-        for (var i = 0; i < 16; i++) {
-            buf[i] = (byte)(buf[i] + (b78 - 48) + (b65 - 48));
-        }
+        for (var i = 0; i < 16; i++) buf[i] = (byte)(buf[i] + (b78 - 48) + (b65 - 48));
 
         var s_after = Encoding.Default.GetString(buf);
     }
@@ -410,7 +414,8 @@ public class h
     }
 
     /**
-     * Get 12 byte array - <b>possibly the key XXXX-XXXX-XXXX</b>
+     * Get 12 byte array -
+     * <b>possibly the key XXXX-XXXX-XXXX</b>
      */
     internal static byte[] w__generate_key(byte[] serial_code_40, byte[] node_id_8_chars, byte[] signature_bytes)
     {
@@ -420,12 +425,6 @@ public class h
         var s2 = y__bytes_to_string(key_buff, 0, 12);
         return key_buff;
     }
-
-    public const int KEY_VALID = 0;
-    public const int KEY_EMPTY = 1;
-    public const int KEY_INVALID = 2;
-    public const int KEY_INVALID_LENGTH = 3;
-    public const int KEY_ERROR = 4;
 
     public static int L(byte[] serial_from_license_file, byte[] node_id_buffer, byte[] key_from_license_file,
                         byte[] signature_bytes)
@@ -466,53 +465,42 @@ public class h
     {
         var text =
             "         Product : [product]\r\n     Product Key : [productKey]\r\n  License Source : [licenseSource]\r\n    License Type : [licenseType]\r\nLast Valid Build : [lastValidBuild]\r\n";
-        if (P_1 is { Length: < 128 }) {
-            P_1 = null;
-        }
+        if (P_1 is { Length: < 128 }) P_1 = null;
 
-        var buffer = ((P_1 != null)
+        var buffer = P_1 != null
             ? j__convert_runtimekey_to_serialcode(utf8StrToBytes(P_1 + "\0"), 128)
-            : utf8StrToBytes(productKey + "\0"));
-        if (P_1 != null) {
-            buffer[64] = 0;
-        }
+            : utf8StrToBytes(productKey + "\0");
+        if (P_1 != null) buffer[64] = 0;
 
-        string text2 = P_4;
-        if (P_0.Length > 0) {
-            text2 = text2 + " (" + P_0 + ")";
-        }
+        var text2 = P_4;
+        if (P_0.Length > 0) text2 = text2 + " (" + P_0 + ")";
 
-        string product_key = "n/a";
+        var product_key = "n/a";
         if (P_1 is { Length: > 0 }) {
-            string @string = Encoding.ASCII.GetString(buffer, 0, buffer.Length);
+            var @string = Encoding.ASCII.GetString(buffer, 0, buffer.Length);
             product_key = @string.Substring(0, @string.IndexOf("\0", StringComparison.Ordinal));
         }
         else if (productKey is { Length: > 0 }) {
             product_key = productKey;
         }
 
-        string license_src = "n/a";
-        if (P_1 is { Length: > 0 }) {
+        var license_src = "n/a";
+        if (P_1 is { Length: > 0 })
             license_src = "RuntimeLicense";
-        }
-        else if (P_5) {
+        else if (P_5)
             license_src = "License File";
-        }
-        else if (productKey is { Length: > 0 }) {
-            license_src = "Registry";
-        }
+        else if (productKey is { Length: > 0 }) license_src = "Registry";
 
-        byte b = (byte)((buffer.Length > 5) ? buffer[5] : 0);
+        var b = (byte)(buffer.Length > 5 ? buffer[5] : 0);
         string license_type;
         if (!expiry_date.Equals("")) {
             license_type = "Beta (Expires on " + expiry_date + ")";
         }
         else if (b != 0) {
             license_type = v(b);
-            if (i__license_type_is_trial(b)) {
+            if (i__license_type_is_trial(b))
                 license_type = license_type + " (Expires on " + DateTime.Now.AddDays(w__get_days_remaining_till_trial_expiry(buffer)).ToString("MM/dd/yyyy") +
                                ")";
-            }
         }
         else {
             license_type = "None (No license could be found for using " + P_4 + " on this system.)";
@@ -539,12 +527,11 @@ public class h
         var machine_name = "";
         try {
             machine_name = Environment.MachineName;
-            string environmentVariable = Environment.GetEnvironmentVariable("_CLUSTER_NETWORK_NAME_");
+            var environmentVariable = Environment.GetEnvironmentVariable("_CLUSTER_NETWORK_NAME_");
             try {
-                if (environmentVariable is { Length: > 0 }) {
+                if (environmentVariable is { Length: > 0 })
                     machine_name = (string)Registry.LocalMachine
                                                    .OpenSubKey("SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters").GetValue("NV Hostname");
-                }
             }
             catch { }
         }
@@ -605,7 +592,7 @@ public class h
             switch (curr_byte) {
                 // 0-9
                 case >= 48 and <= 57:
-                    var num_v = (byte)(curr_byte - 48 << 4);
+                    var num_v = (byte)((curr_byte - 48) << 4);
                     chr = (char)num_v;
                     rtkBuf[i] = num_v;
                     break;
@@ -617,7 +604,7 @@ public class h
                         return rtkBuf;
                     }
 
-                    var alpha_v = (byte)(curr_byte - 65 + 10 << 4);
+                    var alpha_v = (byte)((curr_byte - 65 + 10) << 4);
                     chr = (char)alpha_v;
                     rtkBuf[i] = alpha_v;
                     break;
@@ -654,14 +641,10 @@ public class h
     public static byte[] x(byte[] dest_buffer, byte[] serial_code_format, byte[] node_id_bytes,
                            byte[] encoded_seed_buffer)
     {
-        if (dest_buffer != null) {
-            dest_buffer[0] = 0;
-        }
+        if (dest_buffer != null) dest_buffer[0] = 0;
 
         var num = R___decode_buffer(serial_code_format, 0);
-        if (serial_code_format[0] == 0) {
-            return dest_buffer;
-        }
+        if (serial_code_format[0] == 0) return dest_buffer;
 
         d(serial_code_format, num + 1, 40 - num - 2);
         serial_code_format[39] = 0;
@@ -671,9 +654,7 @@ public class h
 
         for (index = 40; index < 48; index++) dest_buffer[index] = node_id_bytes[index - 40];
 
-        for (index = 50; index < 62; index++) {
-            dest_buffer[index] = array[index - 50];
-        }
+        for (index = 50; index < 62; index++) dest_buffer[index] = array[index - 50];
 
         dest_buffer = _h(dest_buffer, 64);
         dest_buffer[128] = 0;
@@ -685,9 +666,6 @@ public class h
         var node_id_bytes = utf8StrToBytes(L__get_machine_name());
         return x(dest_buffer, serial_code_format, node_id_bytes, encoded_seed_buffer);
     }
-
-    private const int INVALID_RTK = 17;
-    private const int EMPTY_RTK = 18;
 
     public static int T(byte[]? rtkBuf, byte[] sigBuf, int prodCode)
     {
@@ -767,14 +745,10 @@ public class h
 
     public static int M(byte[] P_0, char P_1)
     {
-        byte b = B_char_to_uppercase(P_0[5]);
-        if (b == 86) {
-            return 0;
-        }
+        var b = B_char_to_uppercase(P_0[5]);
+        if (b == 86) return 0;
 
-        if (B_char_to_uppercase(P_0[3]) != P_1) {
-            return 21;
-        }
+        if (B_char_to_uppercase(P_0[3]) != P_1) return 21;
 
         return 0;
     }
@@ -797,10 +771,6 @@ public class h
         return num > c__get_days_since_Y2K_from_buffer(buff) ? 14 : 0;
     }
 
-    public const int TRIAL_EXPIRED = 9;
-    public const int TRIAL_IS_ACTIVE = 12;
-    public const int TRIAL_NONE = 0;
-
     public static int _xh__check_trial_license_expiry(byte[] buf)
     {
         buf[buf.Length - 1] = 0;
@@ -811,7 +781,7 @@ public class h
             var days_now_since_Y2K = 365 * (now.Year - 2000) + 30 * now.Month + now.Day;
             var trial_expiry_days = 365 * (10 * (buf[10] - 48) + (buf[11] - 48))
                                     + 30 * (10 * (buf[6] - 48) + (buf[7] - 48)) +
-                                    (10 * (buf[8] - 48) + (buf[9] - 48));
+                                    10 * (buf[8] - 48) + (buf[9] - 48);
             if (days_now_since_Y2K > trial_expiry_days + grace_days)
                 return TRIAL_EXPIRED;
 
@@ -820,7 +790,7 @@ public class h
         }
 
         if (p_license_type_is_server_cpu_bound(buf[5])) {
-            var num4 = ((buf[6] <= 56) ? (buf[6] - 48) : 0);
+            var num4 = buf[6] <= 56 ? buf[6] - 48 : 0;
         }
 
         return TRIAL_NONE;
@@ -835,14 +805,10 @@ public class h
             var now = DateTime.Now;
             var days_now_since_Y2K = 365 * (now.Year - 2000) + 30 * now.Month + now.Day;
             var trial_expiry_days = 365 * (10 * (buff[10] - 48) + (buff[11] - 48)) + 30 * (10 * (buff[6] - 48) + (buff[7] - 48)) +
-                                    (10 * (buff[8] - 48) + (buff[9] - 48));
-            if (days_now_since_Y2K > trial_expiry_days + grace_days) {
-                return TRIAL_NONE;
-            }
+                                    10 * (buff[8] - 48) + (buff[9] - 48);
+            if (days_now_since_Y2K > trial_expiry_days + grace_days) return TRIAL_NONE;
 
-            if (days_now_since_Y2K < trial_expiry_days) {
-                return TRIAL_NONE;
-            }
+            if (days_now_since_Y2K < trial_expiry_days) return TRIAL_NONE;
 
             return trial_expiry_days + grace_days - days_now_since_Y2K;
         }
@@ -857,9 +823,8 @@ public class h
     public static int c__get_days_since_Y2K_from_buffer(byte[] decoded_buf_from_license_file)
     {
         if (decoded_buf_from_license_file[0] == 0 ||
-            !f_license_type_is_royalty_free_server(B_char_to_uppercase(decoded_buf_from_license_file[5]))) {
+            !f_license_type_is_royalty_free_server(B_char_to_uppercase(decoded_buf_from_license_file[5])))
             return -1;
-        }
 
         var index = 10;
         var year = 1000 * (decoded_buf_from_license_file[index] - 48) +
@@ -875,6 +840,22 @@ public class h
 
 public sealed class M : h
 {
+    public const int NO_SERIAL_FOUND = 6;
+    public const int NULL_LICENSE_KEY = 7;
+    public const int ERROR_LICENSE_PROCESSING = 8;
+    public const int INVALIDE_LICENSE_TYPE = 10;
+
+    private const int ERROR_READING_REGISTRY = 6;
+    private const int KEY_NOT_FOUND = 8;
+
+
+    private const int LICENSE_NOT_ACTIVATED = 8;
+    private const int TRIAL_EXPIRED = 9;
+    private const int INVALID_BUILD_NUMBER = 14;
+
+    public static bool J = false;
+    public static ProductType ProductType { get; set; }
+
     public static void n(int product_code, Type asmType, string? runTimeKey) =>
         l(product_code, asmType, runTimeKey != null ? utf8StrToBytes(runTimeKey + "\0") : null);
 
@@ -890,7 +871,7 @@ public sealed class M : h
             if (result == 0) {
                 result = i(runtime_key, 8949);
                 if (result != 0) {
-                    var build_num = ipw240x.h.c__get_days_since_Y2K_from_buffer(runtime_key);
+                    var build_num = c__get_days_since_Y2K_from_buffer(runtime_key);
                     var code_id = (char)(65 + result);
                     var node_id = L__get_machine_name();
                     var err_message = "IPWorks 2024";
@@ -918,17 +899,13 @@ public sealed class M : h
         if (some_kind_of_product_type.Length >= 10 &&
             ((flag && some_kind_of_product_type.IndexOf("1DEV", StringComparison.Ordinal) == 6) ||
              some_kind_of_product_type.IndexOf("1DSK", StringComparison.Ordinal) == 6 ||
-             (flag && some_kind_of_product_type.IndexOf("1SUB", StringComparison.Ordinal) == 6)) && D()) {
+             (flag && some_kind_of_product_type.IndexOf("1SUB", StringComparison.Ordinal) == 6)) && D())
             throw new Exception(string.Format(exception_tpl, 'Z', L__get_machine_name()));
-        }
     }
 
-    internal static bool D()
-    {
-        return false;
-        //return RtlLib.IsServerOS();
-    }
+    internal static bool D() => false;
 
+    //return RtlLib.IsServerOS();
     /**
      * Populate signature buffer
      */
@@ -997,9 +974,6 @@ public sealed class M : h
         }
     }
 
-    public static bool J = false;
-    public static ProductType ProductType { get; set; }
-
     private static string? k__get_license_filename()
     {
         var codeBase = Assembly.GetExecutingAssembly().CodeBase;
@@ -1019,20 +993,13 @@ public sealed class M : h
             ? Environment.GetEnvironmentVariable("HOME")
             : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%"))!;
         codeBase += "/.nsoftware";
-        if (File.Exists(codeBase + "/nsoftware.IPWorks.lic")) {
-            return codeBase + "/nsoftware.IPWorks.lic";
-        }
+        if (File.Exists(codeBase + "/nsoftware.IPWorks.lic")) return codeBase + "/nsoftware.IPWorks.lic";
 
         if (File.Exists(productLicenseFile))
             return productLicenseFile;
 
         return null;
     }
-
-    public const int NO_SERIAL_FOUND = 6;
-    public const int NULL_LICENSE_KEY = 7;
-    public const int ERROR_LICENSE_PROCESSING = 8;
-    public const int INVALIDE_LICENSE_TYPE = 10;
 
     private static int c__read_license_from_file_or_registry(
         string RunTimeLicenseCode,
@@ -1092,10 +1059,8 @@ public sealed class M : h
             try {
                 registryKey = Registry.LocalMachine.OpenSubKey(RunTimeLicenseCode.Replace("IPNJA", ""));
                 if (registryKey != null) {
-                    object value = registryKey.GetValue("IPNJA");
-                    if (value != null) {
-                        valIPNJA = (string)value;
-                    }
+                    var value = registryKey.GetValue("IPNJA");
+                    if (value != null) valIPNJA = (string)value;
                 }
             }
             catch { }
@@ -1105,7 +1070,7 @@ public sealed class M : h
                 if (registryKey == null)
                     return NO_SERIAL_FOUND;
 
-                object value = registryKey.GetValue("");
+                var value = registryKey.GetValue("");
                 if (value == null)
                     return NO_SERIAL_FOUND;
 
@@ -1134,8 +1099,9 @@ public sealed class M : h
             node_id[0] = 42; // "*"
             node_id[1] = 0;
         }
-        else
+        else {
             node_id = sM.f___str_to_bytes(L__get_machine_name(), null);
+        }
 
         try {
             // (re)convert node_id to string
@@ -1143,8 +1109,9 @@ public sealed class M : h
             if (node_id_string[0] == '*') node_id_string = "*";
 
             object the_key = null;
-            if (hashtable != null)
+            if (hashtable != null) {
                 the_key = hashtable[node_id_string];
+            }
             else {
                 var registryKey = Registry.LocalMachine.OpenSubKey(RunTimeLicenseCode);
                 if (registryKey != null) the_key = registryKey.GetValue(node_id_string);
@@ -1180,14 +1147,6 @@ public sealed class M : h
 
         return _xh__check_trial_license_expiry(serialDecodedBytes);
     }
-
-    private const int ERROR_READING_REGISTRY = 6;
-    private const int KEY_NOT_FOUND = 8;
-
-
-    private const int LICENSE_NOT_ACTIVATED = 8;
-    private const int TRIAL_EXPIRED = 9;
-    private const int INVALID_BUILD_NUMBER = 14;
 
     internal static string h(int prodCode, Type? asmType, ref int error_code, ref string serialCode, bool trialNag)
     {
@@ -1239,9 +1198,7 @@ public sealed class M : h
         W(serialCode,
           "This system contains a developer license for IPWorks 2024 which cannot be used on this operating system. See www.nsoftware.com for licensing options. [code: {0} nodeid: {1}]");
         if (!trialNag) {
-            if (i__license_type_is_trial(outBuffer[5])) {
-                return "EXPIRING TRIAL [" + w__get_days_remaining_till_trial_expiry(outBuffer) + " DAYS LEFT]";
-            }
+            if (i__license_type_is_trial(outBuffer[5])) return "EXPIRING TRIAL [" + w__get_days_remaining_till_trial_expiry(outBuffer) + " DAYS LEFT]";
 
             return serialCode;
         }
@@ -1295,34 +1252,13 @@ public sealed class M : h
 
 internal sealed class sM
 {
-    public static byte[] f___str_to_bytes(string serial, string? encoding)
-    {
-        return saE.aI(serial, encoding);
-    }
+    public static byte[] f___str_to_bytes(string serial, string? encoding) => saE.aI(serial, encoding);
 
-    public static string V__bytest_to_str(byte[] serial, string? encoding)
-    {
-        return saE.aM(serial, encoding);
-    }
+    public static string V__bytest_to_str(byte[] serial, string? encoding) => saE.aM(serial, encoding);
 }
 
 internal class saE
 {
-    internal static string aM(byte[] serial, string? encoding)
-    {
-        try {
-            return w(serial, 0, serial.Length, encoding);
-        }
-        catch (Exception ex) {
-            throw new Exception(ex.Message);
-        }
-    }
-
-    internal static string su(byte[] serial, int offset, int len)
-    {
-        return x().GetString(serial, offset, len);
-    }
-
     internal static char[] n =
     [
         '\0', '\u0001', '\u0002', '\u0003', '\u0004', '\u0005', '\u0006', '\a', '\b', '\t',
@@ -1353,12 +1289,24 @@ internal class saE
         'ú', 'û', 'ü', 'ý', 'ŷ', 'ÿ'
     ];
 
+    internal static byte[]? C;
+
+    internal static string aM(byte[] serial, string? encoding)
+    {
+        try {
+            return w(serial, 0, serial.Length, encoding);
+        }
+        catch (Exception ex) {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    internal static string su(byte[] serial, int offset, int len) => x().GetString(serial, offset, len);
+
     internal static string ss(byte[] P_0, int P_1, int P_2)
     {
         var array = new char[P_2];
-        for (var i = 0; i < array.Length; i++) {
-            array[i] = n[P_0[i + P_1] & 0xFF];
-        }
+        for (var i = 0; i < array.Length; i++) array[i] = n[P_0[i + P_1] & 0xFF];
 
         return new string(array);
     }
@@ -1368,17 +1316,13 @@ internal class saE
     internal static string w(byte[] serial, int offset, int length, string? encodingName)
     {
         try {
-            if (string.IsNullOrEmpty(encodingName)) {
-                return su(serial, offset, length);
-            }
+            if (string.IsNullOrEmpty(encodingName)) return su(serial, offset, length);
 
-            Encoding encoding = Encoding.GetEncoding(sd(encodingName));
+            var encoding = Encoding.GetEncoding(sd(encodingName));
             return encoding.GetString(serial, offset, length);
         }
         catch (Exception ex) {
-            if (encodingName.ToLowerInvariant().Equals("iso-8859-14")) {
-                return ss(serial, offset, length);
-            }
+            if (encodingName.ToLowerInvariant().Equals("iso-8859-14")) return ss(serial, offset, length);
 
             throw new Exception(ex.Message);
         }
@@ -1390,100 +1334,71 @@ internal class saE
             return string.IsNullOrEmpty(encoding) ? sC(serial) : Encoding.GetEncoding(sd(encoding)).GetBytes(serial);
         }
         catch (Exception ex) {
-            if (encoding.ToLowerInvariant().Equals("iso-8859-14")) {
-                return sN(serial);
-            }
+            if (encoding.ToLowerInvariant().Equals("iso-8859-14")) return sN(serial);
 
             throw new Exception(ex.Message);
         }
     }
 
-    internal static byte[] sC(string src)
-    {
-        return x().GetBytes(src);
-    }
+    internal static byte[] sC(string src) => x().GetBytes(src);
 
-    public static bool bT(string P_0)
-    {
-        return P_0 == null || P_0.Length <= 0;
-    }
+    public static bool bT(string P_0) => P_0 == null || P_0.Length <= 0;
 
     protected static string sd(string P_0)
     {
-        if (bT(P_0)) {
-            return P_0;
-        }
+        if (bT(P_0)) return P_0;
 
-        string text = P_0.ToLower();
-        if (text.Equals("utf8")) {
-            return "UTF-8";
-        }
+        var text = P_0.ToLower();
+        if (text.Equals("utf8")) return "UTF-8";
 
         if (text.Equals("euc") || text.Equals("eucjp") || text.Equals("eucjpms") || text.Equals("eucjp-win") ||
             text.Equals("eucjis") ||
             text.Equals("euc_jp") || text.Equals("eucjp-ms") || text.Equals("euc-jp-ms") ||
             text.Equals("euc-jis-2004") || text.Equals("euc-jp-open") ||
-            text.Equals("ujis")) {
+            text.Equals("ujis"))
             return "euc-jp";
-        }
 
         if (text.Equals("cp932") || text.Equals("ms932") || text.Equals("windows-31j") || text.Equals("cswindows31j") ||
             text.Equals("sjis-win") ||
-            text.Equals("shift_jis-2004") || text.Equals("jis_c6220-1969-jp")) {
+            text.Equals("shift_jis-2004") || text.Equals("jis_c6220-1969-jp"))
             return "shift_jis";
-        }
 
         if (text.Equals("iso-2022-jp-1") || text.Equals("iso-2022-jp-2") || text.Equals("iso-2022-jp-ms") ||
-            text.Equals("jis") || text.Equals("jis-ms")) {
+            text.Equals("jis") || text.Equals("jis-ms"))
             return "iso-2022-jp";
-        }
 
         if (text.Equals("ansi_x3.110-1983") || text.Equals("iso-ir-99") || text.Equals("csa_t500-1983") ||
             text.Equals("naplps") ||
-            text.Equals("csiso99naplps")) {
+            text.Equals("csiso99naplps"))
             return "us-ascii";
-        }
 
-        if (text.Equals("8bit")) {
-            return "ISO-8859-1";
-        }
+        if (text.Equals("8bit")) return "ISO-8859-1";
 
-        if (text.Equals("cp-850") || text.Equals("cp850")) {
-            return "cp850";
-        }
+        if (text.Equals("cp-850") || text.Equals("cp850")) return "cp850";
 
-        if (text.Equals("cp1252") || text.Equals("cp-1252")) {
-            return "windows-1252";
-        }
+        if (text.Equals("cp1252") || text.Equals("cp-1252")) return "windows-1252";
 
-        if (text.Equals("t.101-g2") || text.Equals("iso-ir-128")) {
-            return "UTF-8";
-        }
+        if (text.Equals("t.101-g2") || text.Equals("iso-ir-128")) return "UTF-8";
 
         return P_0;
     }
 
-    internal static byte[]? C;
-
     internal static byte[] sN(string P_0)
     {
-        if (C == null) {
+        if (C == null)
             lock (n) {
                 if (C == null) {
                     C = new byte[65535];
-                    for (int i = 0; i < n.Length; i++) {
-                        int num = n[i] & 0xFFFF;
+                    for (var i = 0; i < n.Length; i++) {
+                        var num = n[i] & 0xFFFF;
                         C[num] = (byte)((uint)i & 0xFFu);
                     }
                 }
             }
-        }
 
-        char[] array = P_0.ToCharArray();
-        byte[] array2 = new byte[array.Length];
-        for (int i = 0; i < array2.Length; i++) {
-            array2[i] = C[array[i] & 0xFFFF];
-        }
+        var array = P_0.ToCharArray();
+        var array2 = new byte[array.Length];
+        for (var i = 0; i < array2.Length; i++) array2[i] = C[array[i] & 0xFFFF];
 
         return array2;
     }
