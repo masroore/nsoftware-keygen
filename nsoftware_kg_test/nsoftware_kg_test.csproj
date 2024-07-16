@@ -13,14 +13,21 @@
       <PackageReference Include="nsoftware.CloudMail" Version="24.0.8957" />
       <PackageReference Include="nsoftware.CloudSMS" Version="24.0.8957" />
       <PackageReference Include="nsoftware.CloudStorage" Version="24.0.8957" />
+      <PackageReference Include="nsoftware.InPay" Version="20.0.7877" />
       <PackageReference Include="nsoftware.IPWorks" Version="24.0.8949" />
+      <PackageReference Include="nsoftware.IPWorks3DS" Version="2.3.8669" />
       <PackageReference Include="nsoftware.IPWorksAuth" Version="22.0.8949" />
+      <PackageReference Include="nsoftware.IPWorksBLE" Version="22.0.8949" />
       <PackageReference Include="nsoftware.IPWorksDTLS" Version="24.0.8949" />
+      <PackageReference Include="nsoftware.IPWorksEDI" Version="22.0.8949" />
+      <PackageReference Include="nsoftware.IPWorksEDITranslator" Version="22.0.8949" />
       <PackageReference Include="nsoftware.IPWorksEncrypt" Version="22.0.8949" />
+      <PackageReference Include="nsoftware.IPWorksIoT" Version="22.0.8949" />
       <PackageReference Include="nsoftware.IPWorksIPC" Version="24.0.8949" />
       <PackageReference Include="nsoftware.IPWorksMQ" Version="22.0.8949" />
       <PackageReference Include="nsoftware.IPWorksOpenPGP" Version="22.0.8948" />
       <PackageReference Include="nsoftware.IPWorksSFTP" Version="24.0.8945" />
+      <PackageReference Include="nsoftware.IPWorksSMIME" Version="24.0.8949" />
       <PackageReference Include="nsoftware.IPWorksSNMP" Version="24.0.8957" />
       <PackageReference Include="nsoftware.IPWorksSSH" Version="24.0.8945" />
       <PackageReference Include="nsoftware.IPWorksSSL" Version="24.0.8948" />

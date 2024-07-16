@@ -19,7 +19,14 @@ public static class ProductCodes
         { ProductType.IPWorksIOT, "IO" },
         { ProductType.IPWorksBLE, "IL" },
         { ProductType.IPWorksEncrypt, "IE" },
+        { ProductType.IPWorksDTLS, "ID" },
+        { ProductType.CloudIdentity, "EI" },
+        { ProductType.IPWorks3DS, "TS" },
+        { ProductType.IPWorksEDI, "BE" },
+        { ProductType.IPWorksEDITranslator, "BE" },
+        { ProductType.IPWorksAuth, "IA" },
     };
+
     public static string YearToString(ushort year) => ((char)(year - 1950)).ToString();
 
     public static string GetCode(ProductType type,

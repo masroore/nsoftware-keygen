@@ -20,7 +20,10 @@ public enum ProductType : ushort
     IPWorksEDITranslator,
     IPWorksBLE,
     IPWorks3DS,
+    IPWorksDTLS,
     CloudMail = 76,
     CloudKeys = 1,
+    CloudIdentity,
+    CloudBackup,
     SecureBlackbox = 822
 }

@@ -45,6 +45,12 @@ public class h
         { ProductType.IPWorksIOT, "IO" + PRODUCT_SUFFIX_2024 },
         { ProductType.IPWorksBLE, "IL" + PRODUCT_SUFFIX_2022 },
         { ProductType.IPWorksEncrypt, "IE" + PRODUCT_SUFFIX_2024 },
+        { ProductType.IPWorksDTLS, "ID" + PRODUCT_SUFFIX_2024 },
+        { ProductType.CloudIdentity, "EI" + PRODUCT_SUFFIX_2024 },
+        { ProductType.IPWorks3DS, "TS" + PRODUCT_SUFFIX_2024 },
+        { ProductType.IPWorksEDITranslator, "BE" + PRODUCT_SUFFIX_2024 },
+        { ProductType.IPWorksEDI, "BE" + PRODUCT_SUFFIX_2024 },
+        { ProductType.IPWorksAuth, "IA" + PRODUCT_SUFFIX_2024 },
     };
 
     /**

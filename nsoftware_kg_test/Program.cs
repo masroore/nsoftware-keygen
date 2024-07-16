@@ -4,6 +4,12 @@ using nsoftware.CloudKeys;
 using nsoftware.CloudMail;
 using nsoftware.CloudStorage;
 using nsoftware.IPWorks;
+using nsoftware.IPWorks3DS;
+using nsoftware.IPWorksAuth;
+using nsoftware.IPWorksBLE;
+using nsoftware.IPWorksDTLS;
+using nsoftware.IPWorksEDI;
+using nsoftware.IPWorksEDITranslator;
 using nsoftware.IPWorksSFTP;
 using nsoftware.IPWorksSNMP;
 using nsoftware.IPWorksSSL;
@@ -57,15 +63,21 @@ void test_component<T>(ProductKey key) where T : new() // T : Type
 var asms = AppDomain.CurrentDomain.GetAssemblies().ToList();
 
 
-LoadAndTestComponents(typeof(DNS).Assembly, ProductType.IPWorks);
+LoadAndTestComponents(typeof(IPWorks).Assembly, ProductType.IPWorks);
 LoadAndTestComponents(typeof(CloudStorage).Assembly, ProductType.CloudStorage);
 LoadAndTestComponents(typeof(CloudMail).Assembly, ProductType.CloudMail);
-LoadAndTestComponents(typeof(CertificateStorage).Assembly, ProductType.SecureBlackbox);
-LoadAndTestComponents(typeof(AmazonKMS).Assembly, ProductType.CloudKeys);
+LoadAndTestComponents(typeof(SecureBlackbox).Assembly, ProductType.SecureBlackbox);
+LoadAndTestComponents(typeof(CloudKeys).Assembly, ProductType.CloudKeys);
 LoadAndTestComponents(typeof(IPWorksZip).Assembly, ProductType.IPWorksZip);
-LoadAndTestComponents(typeof(SSLServer).Assembly, ProductType.IPWorksSSL);
+LoadAndTestComponents(typeof(IPWorksSSL).Assembly, ProductType.IPWorksSSL);
 LoadAndTestComponents(typeof(IPWorksSFTP).Assembly, ProductType.IPWorksSFTP);
 LoadAndTestComponents(typeof(IPWorksSNMP).Assembly, ProductType.IPWorksSNMP);
+LoadAndTestComponents(typeof(IPWorks3DS).Assembly, ProductType.IPWorks3DS);
+LoadAndTestComponents(typeof(IPWorksBLE).Assembly, ProductType.IPWorksBLE);
+LoadAndTestComponents(typeof(IPWorksAuth).Assembly, ProductType.IPWorksAuth);
+LoadAndTestComponents(typeof(IPWorksEDI).Assembly, ProductType.IPWorksEDI);
+LoadAndTestComponents(typeof(IPWorksEDITranslator).Assembly, ProductType.IPWorksEDITranslator);
+LoadAndTestComponents(typeof(IPWorksDTLS).Assembly, ProductType.IPWorksDTLS);
 
 
 foreach (var kvp in ProductSignatures.SEED_BANK)

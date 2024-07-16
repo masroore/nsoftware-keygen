@@ -26,12 +26,16 @@ public static class ProductSignatures
                 _IPWorksSSL(buffer);
                 break;
             case ProductType.IPWorksSSH:
+                _IPWorksSSH(buffer);
                 break;
             case ProductType.IPWorksSMIME:
+                _IPWorksSMIME(buffer);
                 break;
             case ProductType.IPWorksEncrypt:
+                _IPWorksEncrypt(buffer);
                 break;
             case ProductType.IPWorksOpenPGP:
+                _IPWorksOpenPGP(buffer);
                 break;
             case ProductType.IPWorksSNMP:
                 _IPWorksSNMP(buffer);
@@ -40,23 +44,31 @@ public static class ProductSignatures
                 _IPWorksZip(buffer);
                 break;
             case ProductType.IPWorksAuth:
+                _IPWorksAuth(buffer);
                 break;
             case ProductType.IPWorksIPC:
+                _IPWorksIPC(buffer);
                 break;
             case ProductType.IPWorksMQ:
+                _IPWorksMQ(buffer);
                 break;
             case ProductType.IPWorksIOT:
+                _IPWorksIOT(buffer);
                 break;
             case ProductType.IPWorksSFTP:
                 _IPWorksSFTP(buffer);
                 break;
             case ProductType.IPWorksEDI:
+                _IPWorksEDI(buffer);
                 break;
             case ProductType.IPWorksEDITranslator:
+                _IPWorksEDITranslator(buffer);
                 break;
             case ProductType.IPWorksBLE:
+                _IPWorksBLE(buffer);
                 break;
             case ProductType.IPWorks3DS:
+                _IPWorks3DS(buffer);
                 break;
             case ProductType.CloudMail:
                 _CloudMail(buffer);
@@ -67,12 +79,192 @@ public static class ProductSignatures
             case ProductType.SecureBlackbox:
                 _SecureBlackbox(buffer);
                 break;
+            case ProductType.IPWorksDTLS:
+                _IPWorksDTLS(buffer);
+                break;
+            case ProductType.CloudIdentity:
+                _CloudIdentity(buffer);
+                break;
+            case ProductType.CloudBackup:
+                _CloudBackup(buffer);
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(type), type, null);
         }
 
         EncryptBuffer(buffer, 0x4e, 0x41, type);
         return buffer;
+    }
+
+    private static void _IPWorksAuth(byte[] buffer1)
+    {
+        var num = 0;
+        buffer1[num++] = 0x71;
+        buffer1[num++] = 0x67;
+        buffer1[num++] = 110;
+        buffer1[num++] = 0x43;
+        buffer1[num++] = 0x30;
+        buffer1[num++] = 0x7a;
+        buffer1[num++] = 80;
+        buffer1[num++] = 0x37;
+        buffer1[num++] = 0x31;
+        buffer1[num++] = 0x74;
+        buffer1[num++] = 0x77;
+        buffer1[num++] = 0x33;
+        buffer1[num++] = 50;
+        buffer1[num++] = 0x4b;
+        buffer1[num++] = 0x74;
+        buffer1[num++] = 0x41;
+    }
+
+    private static void _IPWorksBLE(byte[] buffer1)
+    {
+        var num = 0;
+        buffer1[num++] = 0x69;
+        buffer1[num++] = 0x31;
+        buffer1[num++] = 0x56;
+        buffer1[num++] = 0x56;
+        buffer1[num++] = 0x56;
+        buffer1[num++] = 80;
+        buffer1[num++] = 0x59;
+        buffer1[num++] = 0x54;
+        buffer1[num++] = 0x6c;
+        buffer1[num++] = 0x53;
+        buffer1[num++] = 0x68;
+        buffer1[num++] = 0x6d;
+        buffer1[num++] = 0x76;
+        buffer1[num++] = 0x4c;
+        buffer1[num++] = 0x57;
+        buffer1[num++] = 0x7a;
+    }
+
+    private static void _IPWorksEDITranslator(byte[] buffer1)
+    {
+        var num = 0;
+        buffer1[num++] = 0x30;
+        buffer1[num++] = 0x42;
+        buffer1[num++] = 0x4d;
+        buffer1[num++] = 0x6d;
+        buffer1[num++] = 0x45;
+        buffer1[num++] = 110;
+        buffer1[num++] = 0x68;
+        buffer1[num++] = 0x59;
+        buffer1[num++] = 0x52;
+        buffer1[num++] = 0x4b;
+        buffer1[num++] = 0x31;
+        buffer1[num++] = 0x41;
+        buffer1[num++] = 90;
+        buffer1[num++] = 0x63;
+        buffer1[num++] = 0x4c;
+        buffer1[num++] = 100;
+    }
+
+    private static void _IPWorksEDI(byte[] buffer1)
+    {
+        var num = 0;
+        buffer1[num++] = 80;
+        buffer1[num++] = 0x67;
+        buffer1[num++] = 90;
+        buffer1[num++] = 0x45;
+        buffer1[num++] = 0x52;
+        buffer1[num++] = 0x42;
+        buffer1[num++] = 0x43;
+        buffer1[num++] = 0x4d;
+        buffer1[num++] = 0x4b;
+        buffer1[num++] = 0x48;
+        buffer1[num++] = 0x73;
+        buffer1[num++] = 0x45;
+        buffer1[num++] = 0x33;
+        buffer1[num++] = 50;
+        buffer1[num++] = 0x54;
+        buffer1[num++] = 0x79;
+    }
+
+    private static void _IPWorks3DS(byte[] buffer1)
+    {
+        var num = 0;
+        buffer1[num++] = 0x4f;
+        buffer1[num++] = 0x31;
+        buffer1[num++] = 0x6a;
+        buffer1[num++] = 0x63;
+        buffer1[num++] = 0x4f;
+        buffer1[num++] = 0x47;
+        buffer1[num++] = 0x52;
+        buffer1[num++] = 0x6a;
+        buffer1[num++] = 0x6c;
+        buffer1[num++] = 110;
+        buffer1[num++] = 0x74;
+        buffer1[num++] = 90;
+        buffer1[num++] = 0x68;
+        buffer1[num++] = 50;
+        buffer1[num++] = 90;
+        buffer1[num++] = 90;
+    }
+
+    private static void _IPWorksDTLS(byte[] buffer1)
+    {
+        var num = 0;buffer1[num++] = 0x61;
+        buffer1[num++] = 0x38;
+        buffer1[num++] = 90;
+        buffer1[num++] = 0x53;
+        buffer1[num++] = 0x47;
+        buffer1[num++] = 0x38;
+        buffer1[num++] = 0x4e;
+        buffer1[num++] = 120;
+        buffer1[num++] = 0x66;
+        buffer1[num++] = 0x51;
+        buffer1[num++] = 0x4f;
+        buffer1[num++] = 0x55;
+        buffer1[num++] = 0x4e;
+        buffer1[num++] = 0x62;
+        buffer1[num++] = 0x63;
+        buffer1[num++] = 0x72;
+
+    }
+
+    private static void _IPWorksIOT(byte[] buffer1)
+    {
+        var num = 0;
+    }
+
+    private static void _IPWorksMQ(byte[] buffer1)
+    {
+        var num = 0;
+    }
+
+    private static void _IPWorksIPC(byte[] buffer1)
+    {
+        var num = 0;
+    }
+
+    private static void _IPWorksSSH(byte[] buffer1)
+    {
+        var num = 0;
+    }
+
+    private static void _CloudBackup(byte[] buffer1)
+    {
+        var num = 0;
+    }
+
+    private static void _CloudIdentity(byte[] buffer1)
+    {
+        var num = 0;
+    }
+
+    private static void _IPWorksSMIME(byte[] buffer1)
+    {
+        var num = 0;
+    }
+
+    private static void _IPWorksOpenPGP(byte[] buffer1)
+    {
+        var num = 0;
+    }
+
+    private static void _IPWorksEncrypt(byte[] buffer1)
+    {
+        var num = 0;
     }
 
     private static void _IPWorksSNMP(byte[] buffer1)
@@ -94,7 +286,6 @@ public static class ProductSignatures
         buffer1[num++] = 0x6d;
         buffer1[num++] = 0x37;
         buffer1[num++] = 0x75;
-
     }
 
     private static void _IPWorksSFTP(byte[] buffer1)
