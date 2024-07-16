@@ -14,10 +14,37 @@ public class h
      */
     internal static byte[] O__ALPHA_NUM_TBL = Encoding.ASCII.GetBytes("0123456789ABCDEFGHJKMNPRSTUVWXYZ");
 
-    public static Dictionary<nsoftwareProductType, string> ProductNames2024 = new()
+
+    public const string EDITION_JAVA = "J";
+    public const string EDITION_DOTNET = "N";
+
+    public const string SUFFIX = "A";
+    public const char YEAR_CODE_2016 = (char)(2016 - 1950);
+    public const char YEAR_CODE_2020 = (char)(2020 - 1950);
+    public const char YEAR_CODE_2022 = (char)(2022 - 1950);
+    public const char YEAR_CODE_2024 = (char)(2024 - 1950);
+    public const char YEAR_CODE_2026 = (char)(2026 - 1950);
+
+    public static string PRODUCT_SUFFIX_2022 = EDITION_DOTNET + YEAR_CODE_2022 + SUFFIX;
+    public static string PRODUCT_SUFFIX_2024 = EDITION_DOTNET + YEAR_CODE_2024 + SUFFIX;
+
+    public static Dictionary<ProductType, string> PRODUCT_NAMES = new()
     {
-        { nsoftwareProductType.IPWorks, "IPNJA" },
-        { nsoftwareProductType.SecureBlackbox, "SBNJA" },
+        { ProductType.IPWorks, "IP" + PRODUCT_SUFFIX_2024 },
+        { ProductType.SecureBlackbox, "SB" + PRODUCT_SUFFIX_2024 },
+        { ProductType.CloudStorage, "ES" + PRODUCT_SUFFIX_2024 },
+        { ProductType.CloudMail, "EM" + PRODUCT_SUFFIX_2024 },
+        { ProductType.CloudKeys, "EK" + PRODUCT_SUFFIX_2024 },
+        { ProductType.IPWorksZip, "IZ" + PRODUCT_SUFFIX_2024 },
+        { ProductType.IPWorksSSL, "IS" + PRODUCT_SUFFIX_2024 },
+        { ProductType.IPWorksSSH, "IH" + PRODUCT_SUFFIX_2024 },
+        { ProductType.IPWorksMQ, "IT" + PRODUCT_SUFFIX_2024 },
+        { ProductType.IPWorksSFTP, "IF" + PRODUCT_SUFFIX_2024 },
+        { ProductType.IPWorksOpenPGP, "IG" + PRODUCT_SUFFIX_2024 },
+        { ProductType.IPWorksSNMP, "IN" + PRODUCT_SUFFIX_2024 },
+        { ProductType.IPWorksIOT, "IO" + PRODUCT_SUFFIX_2024 },
+        { ProductType.IPWorksBLE, "IL" + PRODUCT_SUFFIX_2022 },
+        { ProductType.IPWorksEncrypt, "IE" + PRODUCT_SUFFIX_2024 },
     };
 
     /**
@@ -240,8 +267,9 @@ public class h
     internal static sbyte U__get_index_of_char_in_LUT(byte theByte)
     {
         // lower to UPPERCASE
-        if (theByte is >= 97 and <= 122) theByte -= 32;
+        theByte = B_char_to_uppercase(theByte);
 
+        // replace values
         // I => 1
         if (theByte == 73) theByte = 49;
 
@@ -321,7 +349,7 @@ public class h
     /**
      * Encodes buffer
      */
-    protected internal static void G(byte[] buf, byte b78, byte b65)
+    protected internal static void G__encrypt_buff(byte[] buf, byte b78, byte b65)
     {
         var before = buf;
         var s_before = Encoding.ASCII.GetString(buf);
@@ -626,18 +654,14 @@ public class h
 
         d(serial_code_format, num + 1, 40 - num - 2);
         serial_code_format[39] = 0;
-        byte[] array = w__generate_key(serial_code_format, node_id_bytes, encoded_seed_buffer);
-        int num2 = 0;
-        for (num2 = 0; num2 < 40; num2++) {
-            dest_buffer[num2] = serial_code_format[num2];
-        }
+        var array = w__generate_key(serial_code_format, node_id_bytes, encoded_seed_buffer);
+        int index;
+        for (index = 0; index < 40; index++) dest_buffer[index] = serial_code_format[index];
 
-        for (num2 = 40; num2 < 48; num2++) {
-            dest_buffer[num2] = node_id_bytes[num2 - 40];
-        }
+        for (index = 40; index < 48; index++) dest_buffer[index] = node_id_bytes[index - 40];
 
-        for (num2 = 50; num2 < 62; num2++) {
-            dest_buffer[num2] = array[num2 - 50];
+        for (index = 50; index < 62; index++) {
+            dest_buffer[index] = array[index - 50];
         }
 
         dest_buffer = _h(dest_buffer, 64);
@@ -925,7 +949,7 @@ public sealed class M : h
         var xbuf = Encoding.ASCII.GetBytes("FiNAID1tuTqtudJF");
         var b = buf == xbuf;
 
-        if (decode != 0) G(buf, 78, 65);
+        if (decode != 0) G__encrypt_buff(buf, 78, 65);
     }
 
     //t("SOFTWARE\\nsoftware\\RT\\IPNJA", signature_internal, prodCode, ref outMessage, ref array2, ref text2);
@@ -963,7 +987,7 @@ public sealed class M : h
     }
 
     public static bool J = false;
-    public static nsoftwareProductType ProductType { get; set; }
+    public static ProductType ProductType { get; set; }
 
     private static string? k__get_license_filename()
     {
@@ -974,7 +998,7 @@ public sealed class M : h
         if (File.Exists(codeBase + "/nsoftware.IPWorks.lic"))
             return codeBase + "/nsoftware.IPWorks.lic";
 
-        var productLicenseFile = codeBase + "/" + ProductNames2024[ProductType] + ".lic";
+        var productLicenseFile = codeBase + "/" + PRODUCT_NAMES[ProductType] + ".lic";
 
         if (File.Exists(productLicenseFile))
             return productLicenseFile;
@@ -1211,32 +1235,30 @@ public sealed class M : h
             return serialCode;
         }
 
-        if (Environment.OSVersion.Platform == PlatformID.WinCE) {
+        if (Environment.OSVersion.Platform == PlatformID.WinCE)
             return string.Empty;
-        }
 
-        if (i__license_type_is_trial(outBuffer[5])) {
+        var lic_type_b = outBuffer[5];
+        if (i__license_type_is_trial(lic_type_b))
             return string.Empty;
-        }
 
-        if (!o_is_limited_license_type(outBuffer[5])) {
+        if (!o_is_limited_license_type(lic_type_b))
             return string.Empty;
-        }
 
-        byte[] seed_buffer = new byte[16];
-        d_populate_signature(seed_buffer);
+        var sig_bytes = new byte[16];
+        d_populate_signature(sig_bytes);
         var dest_buffer = new byte[129];
         var serial_code_format = serialCode + "                                           \0";
-        S(dest_buffer, sM.f___str_to_bytes(serial_code_format, null), seed_buffer);
+        S(dest_buffer, sM.f___str_to_bytes(serial_code_format, null), sig_bytes);
         return y__bytes_to_string(dest_buffer, 0, 128);
     }
 
     /**
      * Initialize seed buffer (encoded)
      */
-    private static void n_create_signature(byte[] buf, int encode)
+    private static void n__create_signature(byte[] buf, int encode)
     {
-        int num = 0;
+        var num = 0;
         buf[num++] = 70;
         buf[num++] = 105;
         buf[num++] = 78;
@@ -1252,11 +1274,12 @@ public sealed class M : h
         buf[num++] = 117;
         buf[num++] = 100;
         buf[num++] = 74;
-        buf[num++] = 70;
-        if (encode > 0) G(buf, 78, 65);
+        buf[num] = 70;
+        if (encode > 0) G__encrypt_buff(buf, 78, 65);
+        var encrypted = string.Join(",", buf.ToArray());
     }
 
-    private static void d_populate_signature(byte[] signateure) => n_create_signature(signateure, 1);
+    private static void d_populate_signature(byte[] dest_buffer) => n__create_signature(dest_buffer, 1);
 }
 
 internal sealed class sM

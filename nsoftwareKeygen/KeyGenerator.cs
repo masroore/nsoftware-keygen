@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Design;
-using System.Text;
+﻿using System.Text;
 using ipw240x;
 using Microsoft.Win32;
 
@@ -55,155 +54,150 @@ public class KeyGenerator
         { 'Z', "5A" }
     };
 
-    private static readonly Dictionary<nsoftwareProductType, byte[]> ProductMap = new()
+    private static readonly Dictionary<ProductType, byte[]> ProductMap = new()
     {
         {
-            nsoftwareProductType.IPWorks,
-            [
-                48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70, 71, 72, 74, 75, 77, 78, 80, 82, 83, 84, 85, 86, 87, 88, 89, 90
-            ]
-            /*
+            ProductType.IPWorks,
             [
                 169, 159, 166, 130, 168, 155, 165, 152, 102, 159,
                 155, 166, 159, 126, 148, 136, 0
             ]
-            */
         },
         {
-            nsoftwareProductType.IPWorksSSL,
+            ProductType.IPWorksSSL,
             [
                 119, 129, 114, 165, 157, 102, 147, 150, 167, 152,
                 164, 145, 134, 167, 133, 127, 0
             ]
         },
         {
-            nsoftwareProductType.IPWorksSSH,
+            ProductType.IPWorksSSH,
             [
                 122, 167, 123, 162, 169, 164, 115, 133, 164, 162,
                 153, 117, 149, 162, 160, 95, 0
             ]
         },
         {
-            nsoftwareProductType.IPWorksSMIME,
+            ProductType.IPWorksSMIME,
             [
                 161, 161, 128, 135, 126, 126, 114, 113, 120, 150,
                 144, 117, 112, 112, 126, 144, 0
             ]
         },
         {
-            nsoftwareProductType.IPWorksEncrypt,
+            ProductType.IPWorksEncrypt,
             [
                 135, 167, 96, 120, 115, 122, 124, 161, 156, 154,
                 151, 164, 136, 158, 163, 150, 0
             ]
         },
         {
-            nsoftwareProductType.IPWorksOpenPGP,
+            ProductType.IPWorksOpenPGP,
             [
                 123, 155, 144, 156, 158, 167, 168, 128, 102, 132,
                 118, 130, 132, 132, 160, 133, 0
             ]
         },
         {
-            nsoftwareProductType.IPWorksSNMP,
+            ProductType.IPWorksSNMP,
             [
                 146, 123, 102, 121, 163, 150, 164, 123, 135, 122,
                 130, 125, 169, 97, 104, 154, 0
             ]
         },
         {
-            nsoftwareProductType.IPWorksZip,
+            ProductType.IPWorksZip,
             [
                 131, 165, 118, 137, 162, 147, 132, 96, 112, 156,
                 152, 156, 116, 127, 150, 166, 0
             ]
         },
         {
-            nsoftwareProductType.IPWorksAuth,
+            ProductType.IPWorksAuth,
             [
                 160, 150, 157, 114, 95, 169, 127, 102, 96, 163,
                 166, 98, 97, 122, 163, 112, 0
             ]
         },
         {
-            nsoftwareProductType.IPWorksIPC,
+            ProductType.IPWorksIPC,
             [
                 151, 144, 149, 163, 122, 163, 156, 144, 145, 134,
                 165, 134, 117, 114, 120, 133, 0
             ]
         },
         {
-            nsoftwareProductType.IPWorksMQ,
+            ProductType.IPWorksMQ,
             [
                 124, 115, 127, 120, 128, 97, 112, 169, 119, 98,
                 157, 135, 104, 118, 126, 128, 0
             ]
         },
         {
-            nsoftwareProductType.IPWorksIOT,
+            ProductType.IPWorksIOT,
             [
                 160, 135, 166, 95, 164, 146, 134, 95, 154, 98,
                 115, 159, 128, 113, 169, 132, 0
             ]
         },
         {
-            nsoftwareProductType.IPWorksSFTP,
+            ProductType.IPWorksSFTP,
             [
                 127, 163, 145, 115, 161, 121, 137, 161, 162, 155,
                 120, 132, 127, 150, 148, 150, 0
             ]
         },
         {
-            nsoftwareProductType.IPWorksEDI,
+            ProductType.IPWorksEDI,
             [
                 127, 150, 137, 116, 129, 113, 114, 124, 122, 119,
                 162, 116, 98, 97, 131, 168, 0
             ]
         },
         {
-            nsoftwareProductType.IPWorksEDITranslator,
+            ProductType.IPWorksEDITranslator,
             [
                 95, 113, 124, 156, 116, 157, 151, 136, 129, 122,
                 96, 112, 137, 146, 123, 147, 0
             ]
         },
         {
-            nsoftwareProductType.IPWorksBLE,
+            ProductType.IPWorksBLE,
             [
                 152, 96, 133, 133, 133, 127, 136, 131, 155, 130,
                 151, 156, 165, 123, 134, 169, 0
             ]
         },
         {
-            nsoftwareProductType.IPWorks3DS,
+            ProductType.IPWorks3DS,
             [
                 126, 96, 153, 146, 126, 118, 129, 153, 155, 157,
                 163, 137, 151, 97, 137, 137, 0
             ]
         },
         {
-            nsoftwareProductType.CloudMail,
+            ProductType.CloudMail,
             [
                 102, 115, 98, 153, 113, 124, 158, 158, 156, 121,
                 124, 154, 129, 155, 158, 130, 0
             ]
         },
         {
-            nsoftwareProductType.CloudKeys,
+            ProductType.CloudKeys,
             [
                 153, 169, 163, 162, 118, 165, 98, 147, 123, 125,
                 121, 160, 120, 112, 158, 126, 0
             ]
         },
         {
-            nsoftwareProductType.CloudStorage,
+            ProductType.CloudStorage,
             [
                 156, 157, 96, 157, 128, 149, 131, 118, 104, 164,
                 144, 137, 127, 167, 115, 136, 0
             ]
         },
         {
-            nsoftwareProductType.SecureBlackbox,
+            ProductType.SecureBlackbox,
             [
                 119, 149, 96, 136, 132, 155, 128, 124, 114, 126,
                 146, 97, 154, 112, 151, 152, 0
@@ -227,13 +221,40 @@ public class KeyGenerator
 
     private static readonly string PASSWORD_CHARS_SPECIAL = "*$-+?_&=!%{}/";
 
-    public static string GetStringForProduct(nsoftwareProductType productType)
+    public static string GetStringForProduct(ProductType productType)
     {
         var productBytes = ProductMap[productType];
         return Encoding.ASCII.GetString(productBytes);
     }
 
-    public static ProductKey Generate(nsoftwareProductType productType)
+    public static void WriteLicenseFile(ProductType productType, ProductKey key)
+    {
+        void writeParam(StreamWriter sw, string label, string value, bool noQuotes = false)
+        {
+            label = label.Trim(['"']);
+            if (!noQuotes)
+                label = @$"""{label}""";
+            value = @$"""{value.Trim(['"'])}""";
+            sw.WriteLine(@$"{label}={value}");
+        }
+
+        var productCode = M.PRODUCT_NAMES[productType];
+        var filePath = productCode + ".lic";
+        using var fs = File.OpenWrite(filePath);
+        using var writer = new StreamWriter(fs);
+        writer.WriteLine($@"[HKEY_LOCAL_MACHINE\SOFTWARE\nsoftware\RT\{productCode}]");
+        writeParam(writer, "@", key.Serial, true);
+        writeParam(writer, "*", key.Key);
+        //writeParam(writer, key.Node, key.Node);
+        writeParam(writer, "RTK", key.RuntimeKey);
+    }
+
+    public static void InitProductSignatures(ProductType type)
+    {
+        ProductMap[type] = ProductSignatures.GetSignature(type);
+    }
+
+    public static ProductKey Generate(ProductType productType)
     {
         var rtk = "";
         var serial = "";

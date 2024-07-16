@@ -1,26 +1,26 @@
 ﻿namespace nsoftwareKeygen;
 
-public enum nsoftwareProductType
+public enum ProductType : ushort
 {
-    IPWorks,
-    IPWorksSSL,
+    CloudStorage = 16,
+    IPWorks = 98,
+    IPWorksSSL = 17,
+    IPWorksSFTP = 17 + 1,
     IPWorksSSH,
     IPWorksSMIME,
     IPWorksEncrypt,
     IPWorksOpenPGP,
-    IPWorksSNMP,
-    IPWorksZip,
+    IPWorksSNMP = 57,
+    IPWorksZip = 34,
     IPWorksAuth,
     IPWorksIPC,
     IPWorksMQ,
     IPWorksIOT,
-    IPWorksSFTP,
     IPWorksEDI,
     IPWorksEDITranslator,
     IPWorksBLE,
     IPWorks3DS,
-    CloudMail,
-    CloudKeys,
-    CloudStorage,
-    SecureBlackbox
+    CloudMail = 76,
+    CloudKeys = 1,
+    SecureBlackbox = 822
 }

@@ -9,8 +9,23 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="nsoftware.CloudKeys" Version="24.0.8957" />
+      <PackageReference Include="nsoftware.CloudMail" Version="24.0.8957" />
+      <PackageReference Include="nsoftware.CloudSMS" Version="24.0.8957" />
       <PackageReference Include="nsoftware.CloudStorage" Version="24.0.8957" />
       <PackageReference Include="nsoftware.IPWorks" Version="24.0.8949" />
+      <PackageReference Include="nsoftware.IPWorksAuth" Version="22.0.8949" />
+      <PackageReference Include="nsoftware.IPWorksDTLS" Version="24.0.8949" />
+      <PackageReference Include="nsoftware.IPWorksEncrypt" Version="22.0.8949" />
+      <PackageReference Include="nsoftware.IPWorksIPC" Version="24.0.8949" />
+      <PackageReference Include="nsoftware.IPWorksMQ" Version="22.0.8949" />
+      <PackageReference Include="nsoftware.IPWorksOpenPGP" Version="22.0.8948" />
+      <PackageReference Include="nsoftware.IPWorksSFTP" Version="24.0.8945" />
+      <PackageReference Include="nsoftware.IPWorksSNMP" Version="24.0.8957" />
+      <PackageReference Include="nsoftware.IPWorksSSH" Version="24.0.8945" />
+      <PackageReference Include="nsoftware.IPWorksSSL" Version="24.0.8948" />
+      <PackageReference Include="nsoftware.IPWorksVoIP" Version="24.0.8949" />
+      <PackageReference Include="nsoftware.IPWorksZip" Version="24.0.8948" />
       <PackageReference Include="nsoftware.SecureBlackbox" Version="24.0.8955" />
     </ItemGroup>
 
