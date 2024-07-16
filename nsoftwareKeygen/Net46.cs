@@ -53,14 +53,8 @@ public class h
         { ProductType.IPWorksZip, "IZ" + PRODUCT_SUFFIX_2024 },
         { ProductType.IPWorksSSL, "IS" + PRODUCT_SUFFIX_2024 },
         { ProductType.IPWorksSSH, "IH" + PRODUCT_SUFFIX_2024 },
-        { ProductType.IPWorksMQ, "IT" + PRODUCT_SUFFIX_2022 },
-        { ProductType.IPWorksIPC, "IP" + PRODUCT_SUFFIX_2022 },
         { ProductType.IPWorksSFTP, "IF" + PRODUCT_SUFFIX_2024 },
-        { ProductType.IPWorksOpenPGP, "IG" + PRODUCT_SUFFIX_2022 },
         { ProductType.IPWorksSNMP, "IN" + PRODUCT_SUFFIX_2024 },
-        { ProductType.IPWorksIOT, "IO" + PRODUCT_SUFFIX_2022 },
-        { ProductType.IPWorksBLE, "IL" + PRODUCT_SUFFIX_2022 },
-        { ProductType.IPWorksEncrypt, "IE" + PRODUCT_SUFFIX_2022 },
         { ProductType.IPWorksDTLS, "ID" + PRODUCT_SUFFIX_2024 },
         { ProductType.CloudIdentity, "EI" + PRODUCT_SUFFIX_2024 },
         { ProductType.IPWorks3DS, "TS" + PRODUCT_SUFFIX_2024 },
@@ -68,8 +62,15 @@ public class h
         { ProductType.IPWorksEDI, "BE" + PRODUCT_SUFFIX_2024 },
         { ProductType.IPWorksAuth, "IA" + PRODUCT_SUFFIX_2024 },
         { ProductType.CloudBackup, "EB" + PRODUCT_SUFFIX_2024 },
+        // older products
         { ProductType.InPay, "BP" + PRODUCT_SUFFIX_2020 },
-        { ProductType.IPWorksSMIME, "IM" + PRODUCT_SUFFIX_2022 }
+        { ProductType.IPWorksSMIME, "IM" + PRODUCT_SUFFIX_2022 },
+        { ProductType.IPWorksMQ, "IT" + PRODUCT_SUFFIX_2022 },
+        { ProductType.IPWorksIPC, "IP" + PRODUCT_SUFFIX_2022 },
+        { ProductType.IPWorksOpenPGP, "IG" + PRODUCT_SUFFIX_2022 },
+        { ProductType.IPWorksIOT, "IO" + PRODUCT_SUFFIX_2022 },
+        { ProductType.IPWorksBLE, "IL" + PRODUCT_SUFFIX_2022 },
+        { ProductType.IPWorksEncrypt, "IE" + PRODUCT_SUFFIX_2022 },
     };
 
     /**

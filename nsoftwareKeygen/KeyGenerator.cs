@@ -56,6 +56,9 @@ public class KeyGenerator
 
     private static readonly Dictionary<ProductType, byte[]> ProductMap = new();
 
+    private static readonly byte[] ALPHANUMS = Encoding.ASCII.GetBytes("0123456789ABCDEFGHJKMNPRSTUVWXYZ");
+
+    /*
     private static readonly byte[] _QRD =
     [
         48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
@@ -63,6 +66,7 @@ public class KeyGenerator
         77, 78, 80, 82, 83, 84, 85, 86, 87, 88,
         89, 90
     ];
+    */
 
     private static readonly string PASSWORD_CHARS_LCASE = "abcdefghijklmnopqrstuvwxyz";
 
@@ -89,14 +93,15 @@ public class KeyGenerator
             sw.WriteLine(@$"{label}={value}");
         }
 
-        var productCode = h.PRODUCT_NAMES[productType];
+        //var productCode = h.PRODUCT_NAMES[productType];
+        var productCode = ProductCodes.GetCode(type: productType);
         var filePath = productCode + ".lic";
         using var fs = File.OpenWrite(filePath);
         using var writer = new StreamWriter(fs);
         writer.WriteLine($@"[HKEY_LOCAL_MACHINE\SOFTWARE\nsoftware\RT\{productCode}]");
         writeParam(writer, "@", key.Serial, true);
         writeParam(writer, "*", key.Key);
-        writeParam(writer, key.Node, key.Key);
+        //writeParam(writer, key.Node, key.Key);
         writeParam(writer, "RTK", key.RuntimeKey);
     }
 
@@ -270,7 +275,7 @@ public class KeyGenerator
     private static byte _6UA(byte P_0)
     {
         var b = P_0;
-        return _QRD[b % 32];
+        return ALPHANUMS[b % 32];
     }
 
     private static int _jRD(byte[] P_0, int P_1)
@@ -303,7 +308,7 @@ public class KeyGenerator
         if (P_0 == 81) P_0 = 48;
 
         for (sbyte b = 0; b < 32; b++)
-            if (P_0 == _QRD[b])
+            if (P_0 == ALPHANUMS[b])
                 return b;
 
         return -1;

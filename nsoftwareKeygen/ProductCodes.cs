@@ -27,22 +27,39 @@ public static class ProductCodes
         { ProductType.IPWorksAuth, "IA" },
         { ProductType.CloudBackup, "EB" },
         { ProductType.InPay, "BP" },
+        { ProductType.IPWorksIPC, "IP" },
         { ProductType.IPWorksSMIME, "IM" }
     };
 
-    public static string YearToString(ushort year) => ((char)(year - 1950)).ToString();
+    public static string YearToString(short year) => ((char)(year - 1950)).ToString();
+
+    public static short GetLastBuildYear(ProductType type)
+    {
+        return type switch
+        {
+            ProductType.InPay          => 2020,
+            ProductType.IPWorksSMIME   => 2022,
+            ProductType.IPWorksEncrypt => 2022,
+            ProductType.IPWorksOpenPGP => 2022,
+            ProductType.IPWorksIPC     => 2022,
+            ProductType.IPWorksMQ      => 2022,
+            ProductType.IPWorksIOT     => 2022,
+            ProductType.IPWorksBLE     => 2022,
+            _                          => 2024
+        };
+    }
 
     public static string GetCode(ProductType type,
                                  ProductPlatform platform = ProductPlatform.All,
                                  ProductEditions edition = ProductEditions.DotNet,
-                                 ushort year = 2024)
+                                 short year = -1)
     {
         var parts = new[]
         {
             PRODUCT_PREFIX_MAP[type],
             ((char)platform).ToString(),
             ((char)edition).ToString(),
-            YearToString(year)
+            YearToString(year < 0 ? GetLastBuildYear(type) : year)
         };
         return string.Join("", parts);
     }
