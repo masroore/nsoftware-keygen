@@ -1,8 +1,11 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
+using nsoftware.CloudBackup;
+using nsoftware.CloudIdentity;
 using nsoftware.CloudKeys;
 using nsoftware.CloudMail;
 using nsoftware.CloudStorage;
+using nsoftware.InPay;
 using nsoftware.IPWorks;
 using nsoftware.IPWorks3DS;
 using nsoftware.IPWorksAuth;
@@ -10,6 +13,10 @@ using nsoftware.IPWorksBLE;
 using nsoftware.IPWorksDTLS;
 using nsoftware.IPWorksEDI;
 using nsoftware.IPWorksEDITranslator;
+using nsoftware.IPWorksIoT;
+using nsoftware.IPWorksIPC;
+using nsoftware.IPWorksMQ;
+using nsoftware.IPWorksOpenPGP;
 using nsoftware.IPWorksSFTP;
 using nsoftware.IPWorksSNMP;
 using nsoftware.IPWorksSSL;
@@ -66,8 +73,8 @@ var asms = AppDomain.CurrentDomain.GetAssemblies().ToList();
 LoadAndTestComponents(typeof(IPWorks).Assembly, ProductType.IPWorks);
 LoadAndTestComponents(typeof(CloudStorage).Assembly, ProductType.CloudStorage);
 LoadAndTestComponents(typeof(CloudMail).Assembly, ProductType.CloudMail);
-LoadAndTestComponents(typeof(SecureBlackbox).Assembly, ProductType.SecureBlackbox);
 LoadAndTestComponents(typeof(CloudKeys).Assembly, ProductType.CloudKeys);
+LoadAndTestComponents(typeof(SecureBlackbox).Assembly, ProductType.SecureBlackbox);
 LoadAndTestComponents(typeof(IPWorksZip).Assembly, ProductType.IPWorksZip);
 LoadAndTestComponents(typeof(IPWorksSSL).Assembly, ProductType.IPWorksSSL);
 LoadAndTestComponents(typeof(IPWorksSFTP).Assembly, ProductType.IPWorksSFTP);
@@ -79,6 +86,15 @@ LoadAndTestComponents(typeof(IPWorksEDI).Assembly, ProductType.IPWorksEDI);
 LoadAndTestComponents(typeof(IPWorksEDITranslator).Assembly, ProductType.IPWorksEDITranslator);
 LoadAndTestComponents(typeof(IPWorksDTLS).Assembly, ProductType.IPWorksDTLS);
 
+LoadAndTestComponents(typeof(InPay).Assembly, ProductType.InPay);
+LoadAndTestComponents(typeof(IPWorksIPC).Assembly, ProductType.IPWorksIPC);
+LoadAndTestComponents(typeof(IPWorksMQ).Assembly, ProductType.IPWorksMQ);
+LoadAndTestComponents(typeof(IPWorksOpenPGP).Assembly, ProductType.IPWorksOpenPGP);
+LoadAndTestComponents(typeof(IPWorksIoT).Assembly, ProductType.IPWorksIOT);
+
+// beta
+LoadAndTestComponents(typeof(CloudBackup).Assembly, ProductType.CloudBackup);
+LoadAndTestComponents(typeof(CloudIdentity).Assembly, ProductType.CloudIdentity);
 
 foreach (var kvp in ProductSignatures.SEED_BANK)
     WriteLine(kvp.Key + " = " + kvp.Value);

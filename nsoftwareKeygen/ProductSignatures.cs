@@ -88,6 +88,9 @@ public static class ProductSignatures
             case ProductType.CloudBackup:
                 _CloudBackup(buffer);
                 break;
+            case ProductType.InPay:
+                _InPay(buffer);
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(type), type, null);
         }
@@ -203,7 +206,8 @@ public static class ProductSignatures
 
     private static void _IPWorksDTLS(byte[] buffer1)
     {
-        var num = 0;buffer1[num++] = 0x61;
+        var num = 0;
+        buffer1[num++] = 0x61;
         buffer1[num++] = 0x38;
         buffer1[num++] = 90;
         buffer1[num++] = 0x53;
@@ -219,22 +223,69 @@ public static class ProductSignatures
         buffer1[num++] = 0x62;
         buffer1[num++] = 0x63;
         buffer1[num++] = 0x72;
-
     }
 
     private static void _IPWorksIOT(byte[] buffer1)
     {
         var num = 0;
+        buffer1[num++] = 0x71;
+        buffer1[num++] = 0x58;
+        buffer1[num++] = 0x77;
+        buffer1[num++] = 0x30;
+        buffer1[num++] = 0x75;
+        buffer1[num++] = 0x63;
+        buffer1[num++] = 0x57;
+        buffer1[num++] = 0x30;
+        buffer1[num++] = 0x6b;
+        buffer1[num++] = 0x33;
+        buffer1[num++] = 0x44;
+        buffer1[num++] = 0x70;
+        buffer1[num++] = 0x51;
+        buffer1[num++] = 0x42;
+        buffer1[num++] = 0x7a;
+        buffer1[num++] = 0x55;
     }
 
     private static void _IPWorksMQ(byte[] buffer1)
     {
         var num = 0;
+        buffer1[num++] = 0x4d;
+        buffer1[num++] = 0x44;
+        buffer1[num++] = 80;
+        buffer1[num++] = 0x49;
+        buffer1[num++] = 0x51;
+        buffer1[num++] = 50;
+        buffer1[num++] = 0x41;
+        buffer1[num++] = 0x7a;
+        buffer1[num++] = 0x48;
+        buffer1[num++] = 0x33;
+        buffer1[num++] = 110;
+        buffer1[num++] = 0x58;
+        buffer1[num++] = 0x39;
+        buffer1[num++] = 0x47;
+        buffer1[num++] = 0x4f;
+        buffer1[num++] = 0x51;
     }
 
     private static void _IPWorksIPC(byte[] buffer1)
     {
         var num = 0;
+        buffer1[num++] = 0x41;
+        buffer1[num++] = 0x6b;
+        buffer1[num++] = 100;
+        buffer1[num++] = 0x33;
+        buffer1[num++] = 0x4a;
+        buffer1[num++] = 0x45;
+        buffer1[num++] = 0x37;
+        buffer1[num++] = 0x41;
+        buffer1[num++] = 0x58;
+        buffer1[num++] = 0x74;
+        buffer1[num++] = 0x37;
+        buffer1[num++] = 0x48;
+        buffer1[num++] = 0x4c;
+        buffer1[num++] = 0x41;
+        buffer1[num++] = 0x77;
+        buffer1[num++] = 0x43;
     }
 
     private static void _IPWorksSSH(byte[] buffer1)
@@ -245,11 +296,13 @@ public static class ProductSignatures
     private static void _CloudBackup(byte[] buffer1)
     {
         var num = 0;
+        // beta product. licensing not yet implemented
     }
 
     private static void _CloudIdentity(byte[] buffer1)
     {
         var num = 0;
+        // beta product. licensing not yet implemented
     }
 
     private static void _IPWorksSMIME(byte[] buffer1)
@@ -259,12 +312,49 @@ public static class ProductSignatures
 
     private static void _IPWorksOpenPGP(byte[] buffer1)
     {
-        var num = 0;
+        var num = 0;buffer1[num++] = 0x4c;
+        buffer1[num++] = 0x6c;
+        buffer1[num++] = 0x61;
+        buffer1[num++] = 0x6d;
+        buffer1[num++] = 0x6f;
+        buffer1[num++] = 120;
+        buffer1[num++] = 0x79;
+        buffer1[num++] = 0x51;
+        buffer1[num++] = 0x37;
+        buffer1[num++] = 0x55;
+        buffer1[num++] = 0x47;
+        buffer1[num++] = 0x53;
+        buffer1[num++] = 0x55;
+        buffer1[num++] = 0x55;
+        buffer1[num++] = 0x71;
+        buffer1[num++] = 0x56;
+
     }
 
     private static void _IPWorksEncrypt(byte[] buffer1)
     {
         var num = 0;
+    }
+
+    private static void _InPay(byte[] buffer1)
+    {
+        var num = 0;
+        buffer1[num++] = 0x6d;
+        buffer1[num++] = 80;
+        buffer1[num++] = 0x58;
+        buffer1[num++] = 0x53;
+        buffer1[num++] = 0x4a;
+        buffer1[num++] = 0x57;
+        buffer1[num++] = 0x57;
+        buffer1[num++] = 90;
+        buffer1[num++] = 0x33;
+        buffer1[num++] = 0x52;
+        buffer1[num++] = 0x45;
+        buffer1[num++] = 0x79;
+        buffer1[num++] = 70;
+        buffer1[num++] = 0x44;
+        buffer1[num++] = 0x30;
+        buffer1[num++] = 110;
     }
 
     private static void _IPWorksSNMP(byte[] buffer1)

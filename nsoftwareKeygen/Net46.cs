@@ -25,6 +25,7 @@ public class h
     public const char YEAR_CODE_2024 = (char)(2024 - 1950);
     public const char YEAR_CODE_2026 = (char)(2026 - 1950);
 
+    public static string PRODUCT_SUFFIX_2020 = EDITION_DOTNET + YEAR_CODE_2020 + SUFFIX;
     public static string PRODUCT_SUFFIX_2022 = EDITION_DOTNET + YEAR_CODE_2022 + SUFFIX;
     public static string PRODUCT_SUFFIX_2024 = EDITION_DOTNET + YEAR_CODE_2024 + SUFFIX;
 
@@ -38,11 +39,11 @@ public class h
         { ProductType.IPWorksZip, "IZ" + PRODUCT_SUFFIX_2024 },
         { ProductType.IPWorksSSL, "IS" + PRODUCT_SUFFIX_2024 },
         { ProductType.IPWorksSSH, "IH" + PRODUCT_SUFFIX_2024 },
-        { ProductType.IPWorksMQ, "IT" + PRODUCT_SUFFIX_2024 },
+        { ProductType.IPWorksMQ, "IT" + PRODUCT_SUFFIX_2022 },
         { ProductType.IPWorksSFTP, "IF" + PRODUCT_SUFFIX_2024 },
-        { ProductType.IPWorksOpenPGP, "IG" + PRODUCT_SUFFIX_2024 },
+        { ProductType.IPWorksOpenPGP, "IG" + PRODUCT_SUFFIX_2022 },
         { ProductType.IPWorksSNMP, "IN" + PRODUCT_SUFFIX_2024 },
-        { ProductType.IPWorksIOT, "IO" + PRODUCT_SUFFIX_2024 },
+        { ProductType.IPWorksIOT, "IO" + PRODUCT_SUFFIX_2022 },
         { ProductType.IPWorksBLE, "IL" + PRODUCT_SUFFIX_2022 },
         { ProductType.IPWorksEncrypt, "IE" + PRODUCT_SUFFIX_2024 },
         { ProductType.IPWorksDTLS, "ID" + PRODUCT_SUFFIX_2024 },
@@ -51,6 +52,8 @@ public class h
         { ProductType.IPWorksEDITranslator, "BE" + PRODUCT_SUFFIX_2024 },
         { ProductType.IPWorksEDI, "BE" + PRODUCT_SUFFIX_2024 },
         { ProductType.IPWorksAuth, "IA" + PRODUCT_SUFFIX_2024 },
+        { ProductType.CloudBackup, "EB" + PRODUCT_SUFFIX_2024 },
+        { ProductType.InPay, "BP" + PRODUCT_SUFFIX_2020 },
     };
 
     /**

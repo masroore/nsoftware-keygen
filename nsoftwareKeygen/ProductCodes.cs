@@ -25,6 +25,8 @@ public static class ProductCodes
         { ProductType.IPWorksEDI, "BE" },
         { ProductType.IPWorksEDITranslator, "BE" },
         { ProductType.IPWorksAuth, "IA" },
+        { ProductType.CloudBackup, "EB" },
+        { ProductType.InPay, "BP" },
     };
 
     public static string YearToString(ushort year) => ((char)(year - 1950)).ToString();

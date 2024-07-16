@@ -40,4 +40,16 @@
       <ProjectReference Include="..\nsoftwareKeygen\nsoftwareKeygen.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="nsoftware.CloudBackup">
+        <HintPath>..\beta\nsoftware.CloudBackup.dll</HintPath>
+      </Reference>
+      <Reference Include="nsoftware.CloudBackup.System">
+        <HintPath>..\beta\nsoftware.CloudBackup.System.dll</HintPath>
+      </Reference>
+      <Reference Include="nsoftware.CloudIdentity">
+        <HintPath>..\beta\nsoftware.CloudIdentity.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

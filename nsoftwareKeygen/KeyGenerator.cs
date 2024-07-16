@@ -245,7 +245,7 @@ public class KeyGenerator
         writer.WriteLine($@"[HKEY_LOCAL_MACHINE\SOFTWARE\nsoftware\RT\{productCode}]");
         writeParam(writer, "@", key.Serial, true);
         writeParam(writer, "*", key.Key);
-        //writeParam(writer, key.Node, key.Node);
+        writeParam(writer, key.Node, key.Key);
         writeParam(writer, "RTK", key.RuntimeKey);
     }
 

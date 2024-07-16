@@ -21,6 +21,7 @@ public enum ProductType : ushort
     IPWorksBLE,
     IPWorks3DS,
     IPWorksDTLS,
+    InPay,
     CloudMail = 76,
     CloudKeys = 1,
     CloudIdentity,
