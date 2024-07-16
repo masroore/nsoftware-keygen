@@ -37,12 +37,13 @@ void LoadAndTestComponents(Assembly assembly, ProductType type)
 
     var components = FindDerivedTypes(assembly, typeof(Component)).ToList();
     foreach (var ct in components) {
-        WriteLine("Activating " + ct.FullName);
+        var line = ct.FullName;
         try {
             var obj = Activator.CreateInstance(ct, [key.RuntimeKey]);
             var about = obj.GetType().GetProperties().FirstOrDefault(o => o.Name == "About");
             if (about != null)
-                WriteLine(about.GetValue(obj, null));
+                line += ": " + about.GetValue(obj, null);
+            WriteLine(line);
         }
         catch (MissingMethodException e) {
             // yawn...
@@ -102,8 +103,7 @@ LoadAndTestComponents(typeof(CloudBackup).Assembly, ProductType.CloudBackup);
 LoadAndTestComponents(typeof(CloudIdentity).Assembly, ProductType.CloudIdentity);
 */
 
-foreach (var kvp in ProductSignatures.SIGNATURES_DECRYPTED)
-    WriteLine("{" + $@"ProductType.{kvp.Key}, ""{kvp.Value}""" + "},");
+//foreach (var kvp in ProductSignatures.SIGNATURES_DECRYPTED) WriteLine("{" + $@"ProductType.{kvp.Key}, ""{kvp.Value}""" + "},");
 
 /*
 M.ProductType = ProductType.IPWorks;

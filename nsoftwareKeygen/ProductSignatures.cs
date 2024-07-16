@@ -4,9 +4,9 @@ namespace nsoftwareKeygen;
 
 public static class ProductSignatures
 {
-    public static Dictionary<ProductType, string> SIGNATURES_DECRYPTED = new();
+    internal static Dictionary<ProductType, string> SIGNATURES_DECRYPTED = new();
 
-    private static readonly Dictionary<ProductType, string> SIGNATURES = new()
+    internal static readonly Dictionary<ProductType, string> SIGNATURES = new()
     {
         { ProductType.IPWorks, "FiNAID1tuTqtudJF" },
         { ProductType.CloudStorage, "7xuG03vZuusunKXn" },
@@ -42,7 +42,7 @@ public static class ProductSignatures
         var signature = SIGNATURES[type];
 
         if (!string.IsNullOrEmpty(signature)) {
-            buffer = Encoding.Default.GetBytes(signature);
+            buffer = Encoding.ASCII.GetBytes(signature);
             EncryptBuffer(buffer, 0x4e, 0x41, type);
         }
 
@@ -54,7 +54,6 @@ public static class ProductSignatures
         SIGNATURES_DECRYPTED[type] = Encoding.ASCII.GetString(buf);
         for (var i = 0; i < 16; i++) buf[i] = (byte)(buf[i] + (val1 - 48) + (val2 - 48));
     }
-
 
     internal static byte[] GetSignatureFromBytes(ProductType type)
     {
